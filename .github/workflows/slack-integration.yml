@@ -35,7 +35,7 @@ jobs:
         uses: ./
         id: slack
         with:
-          slack-token: ${{ secrets.SLACK_APP_TOKEN }}
+          slack-token: ${{ secrets.SLACK_TOKEN }}
           channel: ${{ secrets.CHANNEL }}
           reviews: 'true'
           comments: 'true'
