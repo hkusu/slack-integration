@@ -1,8 +1,8 @@
-name: 'Slack Integration'
+name: 'GitHub Slack Integration'
 description: 'Slack integration for GitHub.'
 author: 'Hiroyuki Kusu'
 branding:
-  icon: 'slack'
+  icon: 'hash'
   color: 'white'
 inputs:
   slack-token:
