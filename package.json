@@ -1,0 +1,27 @@
+{
+  "name": "slack-integration",
+  "version": "0.1.0",
+  "description": "Slack integration for GitHub.",
+  "main": "src/main.js",
+  "author": "Hiroyuki Kusu <kusu0806@gmail.com>",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hkusu/slack-integration.git"
+  },
+  "bugs": {
+    "url": "https://github.com/hkusu/slack-integration/issues"
+  },
+  "homepage": "https://github.com/hkusu/slack-integration#readme",
+  "scripts": {
+    "local": "NODE_ENV=local node src/main.js",
+    "package": "ncc build src/main.js -o dist"
+  },
+  "dependencies": {
+    "@actions/core": "^1.2.6",
+    "axios": "^0.21.1"
+  },
+  "devDependencies": {
+    "@zeit/ncc": "^0.20.5"
+  }
+}

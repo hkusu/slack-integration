@@ -1,0 +1,121 @@
+name: 'Slack Integration'
+description: 'Slack integration for GitHub.'
+author: 'Hiroyuki Kusu'
+branding:
+  icon: 'slack'
+  color: 'white'
+inputs:
+  slack-token:
+    description: ''
+    required: true
+  channel:
+    description: ''
+    required: true
+  pulls:
+    description: ''
+    default: 'true'
+    required: false
+  issues:
+    description: ''
+    default: 'true'
+    required: false
+  reviews:
+    description: ''
+    default: 'false'
+    required: false
+  comments:
+    description: ''
+    default: 'false'
+    required: false
+  pull-open-message:
+    description: ''
+    default: 'Pull request opened by <actor>'
+    required: false
+  pull-reopen-message:
+    description: ''
+    default: 'Pull request reopened by <actor>'
+    required: false
+  pull-draft-open-message:
+    description: ''
+    default: 'Pull request opened by <actor>'
+    required: false
+  pull-draft-reopen-message:
+    description: ''
+    default: 'Pull request reopened by <actor>'
+    required: false
+  pull-ready-message:
+    description: ''
+    default: 'Pull request ready for review by <actor>'
+    required: false
+  pull-close-message:
+    description: ''
+    default: 'Pull request closed by <actor>'
+    required: false
+  pull-merge-message:
+    description: ''
+    default: 'Pull request merged by <actor>'
+    required: false
+  pull-comment-message:
+    description: ''
+    default: ''
+    required: false
+  issue-open-message:
+    description: ''
+    default: 'Issue opened by <actor>'
+    required: false
+  issue-reopen-message:
+    description: ''
+    default: 'Issue reopened by <actor>'
+    required: false
+  issue-close-message:
+    description: ''
+    default: 'Issue closed by <actor>'
+    required: false
+  issue-comment-message:
+    description: ''
+    default: ''
+    required: false
+  review-approve-message:
+    description: '<actor> approved <author>''s pull request'
+    default: ''
+    required: false
+  review-request-changes-message:
+    description: '<actor> requested changes on <author>''s pull request'
+    default: ''
+    required: false
+  review-comment-message:
+    description: ''
+    default: '<actor> commented on <author>''s pull request'
+    required: false
+  event-name:
+    description: ''
+    default: ${{ github.event_name }}
+    required: false
+  app-name:
+    description: ''
+    required: false
+  app-icon:
+    description: ''
+    required: false
+  footer:
+    description: ''
+    default: <${{ github.event.repository.html_url }}|${{ github.event.repository.full_name }}>
+    required: false
+  footer-icon:
+    description: ''
+    default: ${{ github.event.repository.owner.avatar_url }}
+    required: false
+  event:
+    description: ''
+    default: ${{ toJson(github.event) }}
+    required: false
+  github-token:
+    description: ''
+    default: ${{ github.token }}
+    required: false
+outputs:
+  result:
+    description: '`success` or `failure` is set.'
+runs:
+  using: 'node12'
+  main: 'dist/index.js'

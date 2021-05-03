@@ -1,0 +1,44 @@
+name: Slack Integration
+
+# This yalm file must be in the head branch of the pull request to handle 'pull_request' and 'pull_request_review' events.
+# Also, to handle 'issue' and 'issue_comment' events that need to be in the default branch.
+# 'issue_comment' event is required not only for issues but also for pull request comments.
+
+on:
+  pull_request:
+    types: [opened, reopened, ready_for_review, closed]
+  issues:
+    types: [opened, reopened closed]
+  pull_request_review:
+    types: [submitted]
+  issue_comment:
+    types: [created]
+
+jobs:
+  slack-integration:
+    name: Use this action for check
+    runs-on: ubuntu-latest
+    steps:
+      - name: Dump GitHub context
+        env:
+          GITHUB_CONTEXT: ${{ toJson(github) }}
+        run: echo "$GITHUB_CONTEXT"
+      - name: Check out
+        if: github.event_name == 'pull_request' || github.event_name == 'pull_request_review'
+        uses: actions/checkout@v2
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+      - name: Check out
+        if: github.event_name == 'issues' || github.event_name == 'issue_comment'
+        uses: actions/checkout@v2
+      - name: Use this action
+        uses: ./
+        id: slack
+        with:
+          slack-token: ${{ secrets.SLACK_TOKEN }}
+          channel: ${{ secrets.CHANNEL }}
+          reviews: 'true'
+          comments: 'true'
+      - name: Show result
+        if: always()
+        run: echo '${{ steps.slack.outputs.result }}'
