@@ -6,6 +6,4 @@ const COLOR = {
   DRAFT_GRAY: '#6a737d',
 };
 
-module.exports = {
-  COLOR: COLOR,
-};
+module.exports = COLOR;
