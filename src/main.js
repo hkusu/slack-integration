@@ -55,7 +55,7 @@ if (NODE_ENV != 'local') {
   };
 } else {
   const event = {
-    action: "opened",
+    action: 'opened',
     pull_request: {
       number: 2,
       title: 'pull request title',
@@ -68,10 +68,10 @@ if (NODE_ENV != 'local') {
       },
     },
     review: {
-      body: "review body",
-      html_url: "https://github.com/hkusu/slack-integration/pull/1",
+      body: 'review body',
+      html_url: 'https://github.com/hkusu/slack-integration/pull/1',
       id: 999,
-      state: "approved",
+      state: 'approved',
     },
     issue: {
       number: 99,
@@ -83,8 +83,8 @@ if (NODE_ENV != 'local') {
       },
     },
     comment: {
-      body: "comment body",
-      html_url: "https://hkusu/slack-integration/pull/1",
+      body: 'comment body',
+      html_url: 'https://hkusu/slack-integration/pull/1',
     },
     repository: {
       full_name: 'hkusu/slack-integration-test',
@@ -384,24 +384,24 @@ async function post2Slack(input, message) {
     method: 'post',
     url: `${SLACK_API_BASE_URL}/chat.postMessage`,
     data: {
-      "channel": input.channel,
-      "username": input.appName,
-      "icon_url": input.appIcon,
-      "text": message.description,
-      "attachments": [
+      'channel': input.channel,
+      'username': input.appName,
+      'icon_url': input.appIcon,
+      'text': message.description,
+      'attachments': [
         {
-          "mrkdwn_in": ["text"],
-          "color": message.color,
-          "author_name": input.event.sender.login,
-          "author_link": input.event.sender.html_url,
-          "author_icon": input.event.sender.avatar_url,
-          "title": message.title,
-          "title_link": message.titleLink,
-          "text": message.body,
-          "image_url": message.image,
-          "footer": input.footer,
-          "footer_icon": input.footerIcon,
-          "ts": Math.floor(new Date().getTime() / 1000),
+          'mrkdwn_in': ['text'],
+          'color': message.color,
+          'author_name': input.event.sender.login,
+          'author_link': input.event.sender.html_url,
+          'author_icon': input.event.sender.avatar_url,
+          'title': message.title,
+          'title_link': message.titleLink,
+          'text': message.body,
+          'image_url': message.image,
+          'footer': input.footer,
+          'footer_icon': input.footerIcon,
+          'ts': Math.floor(new Date().getTime() / 1000),
         }
       ]
     },
