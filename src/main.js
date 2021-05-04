@@ -1,6 +1,7 @@
 const core = require('@actions/core');
 const axios = require('axios');
-const { githubApi, slackApi, COLOR, createBaseMessage } = require('./utils');
+const { githubApi, slackApi } = require('./utils');
+const { COLOR } = require('./color');
 
 const NODE_ENV = process.env['NODE_ENV'];
 
@@ -319,6 +320,17 @@ async function handleIssueComment(input) {
   }
 
   await slackApi.post(input, message);
+}
+
+function createBaseMessage() {
+  return {
+    description: '',
+    color: COLOR.BASE_BLACK,
+    title: '',
+    titleLink: '',
+    body: '',
+    image: '',
+  }
 }
 
 run(input)
