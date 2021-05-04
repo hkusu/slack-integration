@@ -4,7 +4,7 @@ const mrkdwn = require('html-to-mrkdwn');
 const GITHUB_API_BASE_URL = 'https://api.github.com';
 const SLACK_API_BASE_URL = 'https://slack.com/api';
 
-async function getPullRequestBody(input) {
+async function getPullRequest(input) {
 
   let pullRequest;
 
@@ -12,7 +12,7 @@ async function getPullRequestBody(input) {
     const res = await axios({
       url: `${GITHUB_API_BASE_URL}/repos/${input.event.repository.full_name}/pulls/${input.event.pull_request.number}`,
       headers: {
-        'Accept': 'application/vnd.github.3.html+json', // Required to get html
+        'Accept': 'application/vnd.github.3.html+json',
         'Authorization': `token ${input.githubToken}`,
       },
     });
@@ -27,6 +27,33 @@ async function getPullRequestBody(input) {
     body: text,
     image: image
   }
+}
+
+async function getReviewComments(input) {
+
+  let comments;
+
+  try {
+    const res = await axios({
+      url: `${GITHUB_API_BASE_URL}/repos/${input.event.repository.full_name}/pulls/${input.event.pull_request.number}/reviews/${input.event.review.id}/comments`,
+      headers: {
+        'Accept': 'application/vnd.github.3.html+json',
+        'Authorization': `token ${input.githubToken}`,
+      },
+    });
+    comments = res.data
+  } catch (e) {
+    throw new GitHubError(e.message);
+  }
+
+  return comments.map(comment => {
+    const { text, image } = mrkdwn(comment.body_html);
+    return {
+      html_url: comment.html_url,
+      body: text,
+      image: image,
+    }
+  })
 }
 
 class GitHubError extends Error {
@@ -94,7 +121,8 @@ async function post2Slack(input, message) {
 
 module.exports = {
   githubApi: {
-    getPullRequestBody: getPullRequestBody,
+    getPullRequest: getPullRequest,
+    getReviewComments: getReviewComments,
   },
   slackApi: {
     post: post2Slack,

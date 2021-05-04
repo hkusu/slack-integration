@@ -1,5 +1,4 @@
 const core = require('@actions/core');
-const axios = require('axios');
 const { githubApi, slackApi } = require('./utils');
 const { COLOR } = require('./color');
 
@@ -43,9 +42,9 @@ if (NODE_ENV != 'local') {
   };
 } else {
   const event = {
-    action: 'opened',
+    action: 'submitted',
     pull_request: {
-      number: 2,
+      number: 3,
       title: 'pull request title',
       html_url: 'https://github.com/hkusu/slack-integration-test/pull/2',
       body: 'pull request body',
@@ -58,7 +57,7 @@ if (NODE_ENV != 'local') {
     review: {
       body: 'review body',
       html_url: 'https://github.com/hkusu/slack-integration/pull/1',
-      id: 999,
+      id: 651204777,
       state: 'approved',
     },
     issue: {
@@ -113,7 +112,7 @@ if (NODE_ENV != 'local') {
     appIcon: '',
     footer: '<https://github.com/hkusu/slack-integration|hkusu/slack-integration>',
     footerIcon: 'https://github.com/hkusu.png',
-    eventName: 'pull_request',
+    eventName: 'pull_request_review',
     event: JSON.stringify(event),
     githubToken: GITHUB_TOKEN,
   };
@@ -167,7 +166,7 @@ async function handlePullRequest(input) {
         message.description = input.pullOpenMessage;
         message.color = COLOR.OPEN_GREEN;
       }
-      const { body, image } = await githubApi.getPullRequestBody(input);
+      const { body, image } = await githubApi.getPullRequest(input);
       message.body = body;
       message.image = image;
       break;
@@ -276,24 +275,14 @@ async function handlePullRequestReviewComment(input) {
 
   if (input.event.action != 'submitted') return;
 
-  let comments;
-  try {
-    const res = await axios({
-      url: `${GITHUB_API_BASE_URL}/repos/${input.event.repository.full_name}/pulls/${input.event.pull_request.number}/reviews/${input.event.review.id}/comments`,
-      headers: {
-        'Authorization': `token ${input.githubToken}`,
-      },
-    });
-    comments = res.data
-  } catch (e) {
-    throw new Error(`GitHub API error (message: ${e.message}).`);
-  }
+  const comments = await githubApi.getReviewComments(input);
 
   for (const comment of comments) {
     const message = createBaseMessage();
     message.title = `Comment on #${input.event.pull_request.number} ${input.event.pull_request.title}`;
     message.titleLink = comment.html_url;
     message.body = comment.body;
+    message.image = comment.image;
     await slackApi.post(input, message);
   }
 }
