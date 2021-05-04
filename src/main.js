@@ -1,20 +1,12 @@
 const core = require('@actions/core');
 const axios = require('axios');
-const { githubApi, slackApi } = require('./utils');
+const { githubApi, slackApi, COLOR, createBaseMessage } = require('./utils');
 
 const NODE_ENV = process.env['NODE_ENV'];
 
 // If you want to run it locally, set the environment variables like `$ export SOME_TOKEN=<your token>`
 const SLACK_TOKEN = process.env['SLACK_TOKEN'];
 const GITHUB_TOKEN = process.env['GITHUB_TOKEN'];
-
-const COLOR = {
-  BASE_BLACK: '#24292f',
-  OPEN_GREEN: '#36a64f',
-  MERGED_PURPLE: '#6f42c1',
-  CLOSED_RED: '#cb2431',
-  DRAFT_GRAY: '#6a737d',
-};
 
 let input;
 if (NODE_ENV != 'local') {
@@ -160,7 +152,7 @@ async function handlePullRequest(input) {
 
   if (input.pulls != 'true') return;
 
-  const message = getDefaultMessage();
+  const message = createBaseMessage();
 
   message.title = `#${input.event.pull_request.number} ${input.event.pull_request.title}`;
   message.titleLink = input.event.pull_request.html_url;
@@ -211,7 +203,7 @@ async function handleIssues(input) {
 
   if (input.issues != 'true') return;
 
-  const message = getDefaultMessage();
+  const message = createBaseMessage();
 
   message.title = `#${input.event.issue.number} ${input.event.issue.title}`;
   message.titleLink = input.event.issue.html_url;
@@ -241,7 +233,7 @@ async function handlePullRequestReview(input) {
 
   if (input.reviews != 'true') return;
 
-  const message = getDefaultMessage();
+  const message = createBaseMessage();
 
   message.title = `Review on #${input.event.pull_request.number} ${input.event.pull_request.title}`;
   message.titleLink = input.event.review.html_url;
@@ -297,7 +289,7 @@ async function handlePullRequestReviewComment(input) {
   }
 
   for (const comment of comments) {
-    const message = getDefaultMessage();
+    const message = createBaseMessage();
     message.title = `Comment on #${input.event.pull_request.number} ${input.event.pull_request.title}`;
     message.titleLink = comment.html_url;
     message.body = comment.body;
@@ -309,7 +301,7 @@ async function handleIssueComment(input) {
 
   if (input.comments != 'true') return;
 
-  const message = getDefaultMessage();
+  const message = createBaseMessage();
 
   switch (input.event.action) {
     case 'created':
@@ -327,17 +319,6 @@ async function handleIssueComment(input) {
   }
 
   await slackApi.post(input, message);
-}
-
-function getDefaultMessage() {
-  return {
-    description: '',
-    color: COLOR.BASE_BLACK,
-    title: '',
-    titleLink: '',
-    body: '',
-    image: '',
-  }
 }
 
 run(input)

@@ -92,6 +92,25 @@ async function post2Slack(input, message) {
   }
 }
 
+const COLOR = {
+  BASE_BLACK: '#24292f',
+  OPEN_GREEN: '#36a64f',
+  MERGED_PURPLE: '#6f42c1',
+  CLOSED_RED: '#cb2431',
+  DRAFT_GRAY: '#6a737d',
+};
+
+function createBaseMessage() {
+  return {
+    description: '',
+    color: COLOR.BASE_BLACK,
+    title: '',
+    titleLink: '',
+    body: '',
+    image: '',
+  }
+}
+
 module.exports = {
   githubApi: {
     getPullRequestBody: getPullRequestBody,
@@ -99,4 +118,6 @@ module.exports = {
   slackApi: {
     post: post2Slack,
   },
+  COLOR: COLOR,
+  createBaseMessage: createBaseMessage,
 };
