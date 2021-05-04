@@ -27,4 +27,8 @@ jobs:
         with:
           slack-token: ${{ secrets.SLACK_TOKEN }}
           channel: ${{ secrets.CHANNEL }}
+          pulls: 'true'
+          issues: 'true'
+          reviews: 'true'
+          comments: 'true'
 ```
