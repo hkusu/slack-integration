@@ -1,5 +1,7 @@
 # Slack Integration (Beta)
 
+<img src="./doc/image1.png" width="400">
+
 ## Usage
 
 ```
