@@ -13,11 +13,11 @@ inputs:
     required: true
   pulls:
     description: ''
-    default: 'true'
+    default: 'false'
     required: false
   issues:
     description: ''
-    default: 'true'
+    default: 'false'
     required: false
   reviews:
     description: ''
