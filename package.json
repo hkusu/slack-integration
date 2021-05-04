@@ -19,7 +19,8 @@
   },
   "dependencies": {
     "@actions/core": "^1.2.6",
-    "axios": "^0.21.1"
+    "axios": "^0.21.1",
+    "html-to-mrkdwn": "^3.0.0"
   },
   "devDependencies": {
     "@zeit/ncc": "^0.20.5"
