@@ -95,7 +95,9 @@ async function handleIssues(input) {
     case 'opened':
       message.description = input.issueOpenMessage;
       message.color = COLOR.OPEN_GREEN;
-      message.body = input.event.issue.body;
+      const { body, image } = await githubApi.getIssue(input);
+      message.body = body;
+      message.image = image;
       break;
     case 'reopened':
       message.description = input.issueReopenMessage;
@@ -120,7 +122,9 @@ async function handlePullRequestReview(input) {
 
   message.title = `Review on #${input.event.pull_request.number} ${input.event.pull_request.title}`;
   message.titleLink = input.event.review.html_url;
-  message.body = input.event.review.body;
+  const { body, image } = await githubApi.getReview(input);
+  message.body = body;
+  message.image = image;
 
   switch (input.event.action) {
     case 'submitted':
@@ -185,7 +189,9 @@ async function handleIssueComment(input) {
       }
       message.title = `Comment on #${input.event.issue.number} ${input.event.issue.title}`;
       message.titleLink = input.event.comment.html_url;
-      message.body = input.event.comment.body;
+      const { body, image } = await githubApi.getComment(input);
+      message.body = body;
+      message.image = image;
       break;
     default:
       return;

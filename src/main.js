@@ -69,6 +69,7 @@ if (NODE_ENV != 'local') {
       },
     },
     comment: {
+      id: 831946275,
       body: 'comment body',
       html_url: 'https://hkusu/slack-integration/pull/1',
     },

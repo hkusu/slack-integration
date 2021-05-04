@@ -29,6 +29,81 @@ async function getPullRequest(input) {
   }
 }
 
+async function getIssue(input) {
+
+  let issue;
+
+  try {
+    const res = await axios({
+      url: `${GITHUB_API_BASE_URL}/repos/${input.event.repository.full_name}/issues/${input.event.issue.number}`,
+      headers: {
+        'Accept': 'application/vnd.github.3.html+json',
+        'Authorization': `token ${input.githubToken}`,
+      },
+    });
+    issue = res.data
+  } catch (e) {
+    throw new GitHubError(e.message);
+  }
+
+  const { text, image } = mrkdwn(issue.body_html);
+
+  return {
+    body: text,
+    image: image
+  }
+}
+
+async function getReview(input) {
+
+  let review;
+
+  try {
+    const res = await axios({
+      url: `${GITHUB_API_BASE_URL}/repos/${input.event.repository.full_name}/pulls/${input.event.pull_request.number}/reviews/${input.event.review.id}`,
+      headers: {
+        'Accept': 'application/vnd.github.3.html+json',
+        'Authorization': `token ${input.githubToken}`,
+      },
+    });
+    review = res.data
+  } catch (e) {
+    throw new GitHubError(e.message);
+  }
+
+  const { text, image } = mrkdwn(review.body_html);
+
+  return {
+    body: text,
+    image: image
+  }
+}
+
+async function getComment(input) {
+
+  let comment;
+
+  try {
+    const res = await axios({
+      url: `${GITHUB_API_BASE_URL}/repos/${input.event.repository.full_name}/issues/comments/${input.event.comment.id}`,
+      headers: {
+        'Accept': 'application/vnd.github.3.html+json',
+        'Authorization': `token ${input.githubToken}`,
+      },
+    });
+    comment = res.data
+  } catch (e) {
+    throw new GitHubError(e.message);
+  }
+
+  const { text, image } = mrkdwn(comment.body_html);
+
+  return {
+    body: text,
+    image: image
+  }
+}
+
 async function getReviewComments(input) {
 
   let comments;
@@ -122,6 +197,9 @@ async function post2Slack(input, message) {
 module.exports = {
   githubApi: {
     getPullRequest: getPullRequest,
+    getIssue: getIssue,
+    getReview: getReview,
+    getComment: getComment,
     getReviewComments: getReviewComments,
   },
   slackApi: {
