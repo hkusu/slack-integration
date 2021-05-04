@@ -1,6 +1,7 @@
 const core = require('@actions/core');
 const axios = require('axios');
 const mrkdwn = require('html-to-mrkdwn');
+const { githubApi } = require('./utils');
 
 const NODE_ENV = process.env['NODE_ENV'];
 
@@ -11,7 +12,6 @@ const SLACK_TOKEN = process.env['SLACK_TOKEN'];
 const GITHUB_TOKEN = process.env['GITHUB_TOKEN'];
 
 const SLACK_API_BASE_URL = 'https://slack.com/api';
-const GITHUB_API_BASE_URL = 'https://api.github.com';
 
 const COLOR = {
   BASE_BLACK: '#24292f',
@@ -59,7 +59,7 @@ if (NODE_ENV != 'local') {
     pull_request: {
       number: 2,
       title: 'pull request title',
-      html_url: 'https://github.com/hkusu/slack-integration/pull/1',
+      html_url: 'https://github.com/hkusu/slack-integration-test/pull/2',
       body: 'pull request body',
       draft: false,
       merged: true,
@@ -101,7 +101,7 @@ if (NODE_ENV != 'local') {
   };
   input = {
     slackToken: SLACK_TOKEN,
-    channel: 'my-greeting-channel',
+    channel: 'github_test',
     pulls: 'true',
     issues: 'true',
     reviews: 'true',
@@ -179,25 +179,9 @@ async function handlePullRequest(input) {
         message.description = input.pullOpenMessage;
         message.color = COLOR.OPEN_GREEN;
       }
-
-      let pullRequest;
-      try {
-        const res = await axios({
-          url: `${GITHUB_API_BASE_URL}/repos/${input.event.repository.full_name}/pulls/${input.event.pull_request.number}`,
-          headers: {
-            'Accept': 'application/vnd.github.3.html+json', // Required to get html
-            'Authorization': `token ${input.githubToken}`,
-          },
-        });
-        pullRequest = res.data
-      } catch (e) {
-        throw new Error(`GitHub API error (message: ${e.message}).`);
-      }
-
-      const { text, image } = mrkdwn(pullRequest.body_html);
-      message.body = text;
+      const { body, image } = await githubApi.getPullRequestBody(input);
+      message.body = body;
       message.image = image;
-
       break;
     case 'reopened':
       if (input.event.pull_request.draft) {
