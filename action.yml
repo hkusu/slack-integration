@@ -87,10 +87,6 @@ inputs:
     description: ''
     default: '<actor> commented on <author>''s pull request'
     required: false
-  event-name:
-    description: ''
-    default: ${{ github.event_name }}
-    required: false
   app-name:
     description: ''
     required: false
@@ -104,6 +100,14 @@ inputs:
   footer-icon:
     description: ''
     default: ${{ github.event.repository.owner.avatar_url }}
+    required: false
+  thread-comments:
+    description: ''
+    default: 'false'
+    required: false
+  event-name:
+    description: ''
+    default: ${{ github.event_name }}
     required: false
   event:
     description: ''
