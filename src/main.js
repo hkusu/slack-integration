@@ -1,5 +1,6 @@
 const core = require('@actions/core');
 const axios = require('axios');
+const mrkdwn = require('html-to-mrkdwn');
 
 const NODE_ENV = process.env['NODE_ENV'];
 
@@ -54,9 +55,9 @@ if (NODE_ENV != 'local') {
   };
 } else {
   const event = {
-    action: "submitted",
+    action: "opened",
     pull_request: {
-      number: 1,
+      number: 2,
       title: 'pull request title',
       html_url: 'https://github.com/hkusu/slack-integration/pull/1',
       body: 'pull request body',
@@ -86,8 +87,8 @@ if (NODE_ENV != 'local') {
       html_url: "https://hkusu/slack-integration/pull/1",
     },
     repository: {
-      full_name: 'hkusu/slack-integration',
-      html_url: 'https://github.com/hkusu/slack-integration',
+      full_name: 'hkusu/slack-integration-test',
+      html_url: 'https://github.com/hkusu/slack-integration-test',
       owner: {
         avatar_url: 'https://github.com/hkusu.png',
       },
@@ -124,7 +125,7 @@ if (NODE_ENV != 'local') {
     appIcon: '',
     footer: '<https://github.com/hkusu/slack-integration|hkusu/slack-integration>',
     footerIcon: 'https://github.com/hkusu.png',
-    eventName: 'pull_request_review',
+    eventName: 'pull_request',
     event: JSON.stringify(event),
     githubToken: GITHUB_TOKEN,
   };
@@ -178,7 +179,25 @@ async function handlePullRequest(input) {
         message.description = input.pullOpenMessage;
         message.color = COLOR.OPEN_GREEN;
       }
-      message.body = input.event.pull_request.body;
+
+      let pullRequest;
+      try {
+        const res = await axios({
+          url: `${GITHUB_API_BASE_URL}/repos/${input.event.repository.full_name}/pulls/${input.event.pull_request.number}`,
+          headers: {
+            'Accept': 'application/vnd.github.3.html+json', // Required to get html
+            'Authorization': `token ${input.githubToken}`,
+          },
+        });
+        pullRequest = res.data
+      } catch (e) {
+        throw new Error(`GitHub API error (message: ${e.message}).`);
+      }
+
+      const { text, image } = mrkdwn(pullRequest.body_html);
+      message.body = text;
+      message.image = image;
+
       break;
     case 'reopened':
       if (input.event.pull_request.draft) {
@@ -338,6 +357,7 @@ function getDefaultMessage() {
     title: '',
     titleLink: '',
     body: '',
+    image: '',
   }
 }
 
@@ -370,6 +390,7 @@ async function post2Slack(input, message) {
       "text": message.description,
       "attachments": [
         {
+          "mrkdwn_in": ["text"],
           "color": message.color,
           "author_name": input.event.sender.login,
           "author_link": input.event.sender.html_url,
@@ -377,6 +398,7 @@ async function post2Slack(input, message) {
           "title": message.title,
           "title_link": message.titleLink,
           "text": message.body,
+          "image_url": message.image,
           "footer": input.footer,
           "footer_icon": input.footerIcon,
           "ts": Math.floor(new Date().getTime() / 1000),
