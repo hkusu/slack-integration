@@ -2,6 +2,7 @@ const axios = require('axios');
 const mrkdwn = require('html-to-mrkdwn');
 
 const GITHUB_API_BASE_URL = 'https://api.github.com';
+const SLACK_API_BASE_URL = 'https://slack.com/api';
 
 async function getPullRequestBody(input) {
 
@@ -35,8 +36,67 @@ class GitHubError extends Error {
   }
 }
 
+async function post2Slack(input, message) {
+
+  const actor = input.event.sender.login;
+  message.description = message.description.replace(/<actor>/g, actor);
+
+  let author = '';
+  switch (input.eventName) {
+    case 'pull_request':
+    case 'pull_request_review':
+      author = input.event.pull_request.user.login;
+      break;
+    case 'issues':
+    case 'issue_comment':
+      author = input.event.issue.user.login;
+      break;
+    default:
+  }
+  message.description = message.description.replace(/<author>/g, author)
+
+  const res = await axios({
+    method: 'post',
+    url: `${SLACK_API_BASE_URL}/chat.postMessage`,
+    data: {
+      'channel': input.channel,
+      'username': input.appName,
+      'icon_url': input.appIcon,
+      'text': message.description,
+      'attachments': [
+        {
+          'mrkdwn_in': ['text'],
+          'color': message.color,
+          'author_name': input.event.sender.login,
+          'author_link': input.event.sender.html_url,
+          'author_icon': input.event.sender.avatar_url,
+          'title': message.title,
+          'title_link': message.titleLink,
+          'text': message.body,
+          'image_url': message.image,
+          'footer': input.footer,
+          'footer_icon': input.footerIcon,
+          'ts': Math.floor(new Date().getTime() / 1000),
+        }
+      ]
+    },
+    responseType: 'json',
+    headers: {
+      'Content-Type': 'application/json; charset=utf-8',
+      'Authorization': `Bearer ${input.slackToken}`,
+    },
+  });
+
+  if (!res.data.ok) {
+    throw new Error(`Slack API error (message: ${res.data.error}).`);
+  }
+}
+
 module.exports = {
   githubApi: {
     getPullRequestBody: getPullRequestBody,
+  },
+  slackApi: {
+    post: post2Slack,
   },
 };
