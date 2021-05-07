@@ -166,6 +166,7 @@ async function handlePullRequestReviewComment(input, previousPostTimestamp) {
 
   for (const comment of comments) {
     const message = createBaseMessage();
+    message.description = input.pullCommentMessage;
     message.title = `Comment on #${input.event.pull_request.number} ${input.event.pull_request.title}`;
     message.titleLink = comment.html_url;
     message.body = comment.body;
