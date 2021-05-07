@@ -40,7 +40,8 @@ jobs:
           pulls: true
           issues: true
           reviews: true
-          comments: true
+          pull-comments: true
+          issue-comments: true
           thread-comments: true
       - name: Show result
         if: always()
