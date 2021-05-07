@@ -37,12 +37,12 @@ jobs:
         with:
           slack-token: ${{ secrets.SLACK_TOKEN }}
           channel: ${{ secrets.CHANNEL }}
-          pulls: true
-          issues: true
-          reviews: true
-          pull-comments: true
-          issue-comments: true
-          thread-comments: true
+          subscribe-pulls: true
+          subscribe-issues: true
+          subscribe-reviews: true
+          subscribe-pull-comments: true
+          subscribe-issue-comments: true
+          threading-comments: true
       - name: Show result
         if: always()
         run: echo '${{ steps.slack.outputs.result }}'

@@ -158,7 +158,7 @@ async function post2Slack(input, message, previousPostTimestamp) {
   message.description = message.description.replace(/<author>/g, author)
 
   let threadTimestamp = null;
-  if (input.threadComments == 'true' && previousPostTimestamp) {
+  if (input.threadingComments == 'true' && previousPostTimestamp) {
     threadTimestamp = previousPostTimestamp
   }
 
