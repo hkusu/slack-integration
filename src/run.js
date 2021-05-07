@@ -158,7 +158,7 @@ async function handlePullRequestReview(input) {
 */
 async function handlePullRequestReviewComment(input, previousPostTimestamp) {
 
-  if (input.comments != 'true') return;
+  if (input.pullComments != 'true') return;
 
   if (input.event.action != 'submitted') return;
 
@@ -179,7 +179,8 @@ async function handlePullRequestReviewComment(input, previousPostTimestamp) {
 
 async function handleIssueComment(input) {
 
-  if (input.comments != 'true') return;
+  if (input.event.issue.pull_request && input.pullComments != 'true') return;
+  if (!input.event.issue.pull_request && input.issueComments != 'true') return;
 
   const message = createBaseMessage();
 

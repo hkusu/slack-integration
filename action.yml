@@ -23,7 +23,11 @@ inputs:
     description: ''
     default: 'false'
     required: false
-  comments:
+  pull-comments:
+    description: ''
+    default: 'false'
+    required: false
+  issue-comments:
     description: ''
     default: 'false'
     required: false

@@ -28,7 +28,8 @@ jobs:
           pulls: true
           issues: true
           reviews: true
-          comments: true
+          pull-comments: true
+          issue-comments: true
 ```
 
 *NOTE:*
