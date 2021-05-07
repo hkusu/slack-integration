@@ -21,8 +21,8 @@ async function run(input) {
       await handleIssues(input);
       break;
     case 'pull_request_review':
-      await handlePullRequestReview(input);
-      await handlePullRequestReviewComment(input);
+      const postTimestamp = await handlePullRequestReview(input);
+      await handlePullRequestReviewComment(input, postTimestamp);
       break;
     case 'issue_comment':
       await handleIssueComment(input);
@@ -150,13 +150,13 @@ async function handlePullRequestReview(input) {
       return;
   }
 
-  await slackApi.post(input, message);
+  return await slackApi.post(input, message); // return timestamp
 }
 
 /*
   Don't use 'pull_request_review_comment' events, uselessly launch GitHub Actions work flows.
 */
-async function handlePullRequestReviewComment(input) {
+async function handlePullRequestReviewComment(input, previousPostTimestamp) {
 
   if (input.comments != 'true') return;
 
@@ -170,7 +170,10 @@ async function handlePullRequestReviewComment(input) {
     message.titleLink = comment.html_url;
     message.body = comment.body;
     message.image = comment.image;
-    await slackApi.post(input, message);
+    const postTimestamp = await slackApi.post(input, message, previousPostTimestamp);
+    if (!previousPostTimestamp) {
+      previousPostTimestamp = postTimestamp;
+    }
   }
 }
 

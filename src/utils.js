@@ -138,7 +138,7 @@ class GitHubError extends Error {
   }
 }
 
-async function post2Slack(input, message) {
+async function post2Slack(input, message, previousPostTimestamp) {
 
   const actor = input.event.sender.login;
   message.description = message.description.replace(/<actor>/g, actor);
@@ -156,6 +156,11 @@ async function post2Slack(input, message) {
     default:
   }
   message.description = message.description.replace(/<author>/g, author)
+
+  let threadTimestamp = null;
+  if (input.threadComments == 'true' && previousPostTimestamp) {
+    threadTimestamp = previousPostTimestamp
+  }
 
   const res = await axios({
     method: 'post',
@@ -180,7 +185,8 @@ async function post2Slack(input, message) {
           'footer_icon': input.footerIcon,
           'ts': Math.floor(new Date().getTime() / 1000),
         }
-      ]
+      ],
+      'thread_ts': threadTimestamp,
     },
     responseType: 'json',
     headers: {
@@ -192,6 +198,8 @@ async function post2Slack(input, message) {
   if (!res.data.ok) {
     throw new Error(`Slack API error (message: ${res.data.error}).`);
   }
+
+  return res.data.ts; // return timestamp
 }
 
 module.exports = {
