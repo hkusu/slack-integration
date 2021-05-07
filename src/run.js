@@ -33,7 +33,7 @@ async function run(input) {
 
 async function handlePullRequest(input) {
 
-  if (input.pulls != 'true') return;
+  if (input.subscribePulls != 'true') return;
 
   const message = createBaseMessage();
 
@@ -84,7 +84,7 @@ async function handlePullRequest(input) {
 
 async function handleIssues(input) {
 
-  if (input.issues != 'true') return;
+  if (input.subscribeIssues != 'true') return;
 
   const message = createBaseMessage();
 
@@ -116,7 +116,7 @@ async function handleIssues(input) {
 
 async function handlePullRequestReview(input) {
 
-  if (input.reviews != 'true') return;
+  if (input.subscribeReviews != 'true') return;
 
   const message = createBaseMessage();
 
@@ -158,7 +158,7 @@ async function handlePullRequestReview(input) {
 */
 async function handlePullRequestReviewComment(input, previousPostTimestamp) {
 
-  if (input.pullComments != 'true') return;
+  if (input.subscribePullComments != 'true') return;
 
   if (input.event.action != 'submitted') return;
 
@@ -180,8 +180,8 @@ async function handlePullRequestReviewComment(input, previousPostTimestamp) {
 
 async function handleIssueComment(input) {
 
-  if (input.event.issue.pull_request && input.pullComments != 'true') return;
-  if (!input.event.issue.pull_request && input.issueComments != 'true') return;
+  if (input.event.issue.pull_request && input.subscribePullComments != 'true') return;
+  if (!input.event.issue.pull_request && input.subscribeIssueComments != 'true') return;
 
   const message = createBaseMessage();
 

@@ -2,6 +2,8 @@
 
 <img src="./doc/image1.png" width="400">
 
+Useful when [official integration](https://github.com/integrations/slack) is not available, such as Slack Enterprise Grid.
+
 ## Usage
 
 ```yaml
@@ -25,11 +27,12 @@ jobs:
         with:
           slack-token: ${{ secrets.SLACK_TOKEN }}
           channel: 'my-report-channel'
-          pulls: true
-          issues: true
-          reviews: true
-          pull-comments: true
-          issue-comments: true
+          subscribe-pulls: true
+          subscribe-issues: true
+          subscribe-reviews: true
+          subscribe-pull-comments: true
+          subscribe-issue-comments: true
+          threading-comments: true
 ```
 
 *NOTE:*
