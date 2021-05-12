@@ -181,7 +181,6 @@ async function post2Slack(input, message, previousPostTimestamp) {
           'title_link': message.titleLink,
           'text': message.body,
           'image_url': message.image,
-          'thumb_url': message.thumbnail,
           'footer': input.footer,
           'footer_icon': input.footerIcon,
           'ts': Math.floor(new Date().getTime() / 1000),

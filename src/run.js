@@ -51,7 +51,7 @@ async function handlePullRequest(input) {
       }
       const { body, image } = await githubApi.getPullRequest(input);
       message.body = body;
-      message.thumbnail = image;
+      message.image = image;
       break;
     case 'reopened':
       if (input.event.pull_request.draft) {
@@ -97,7 +97,7 @@ async function handleIssues(input) {
       message.color = COLOR.OPEN_GREEN;
       const { body, image } = await githubApi.getIssue(input);
       message.body = body;
-      message.thumbnail = image;
+      message.image = image;
       break;
     case 'reopened':
       message.description = input.issueReopenMessage;
@@ -213,7 +213,6 @@ function createBaseMessage() {
     titleLink: '',
     body: '',
     image: '',
-    thumbnail: '',
   }
 }
 
