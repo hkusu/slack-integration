@@ -25,7 +25,11 @@ async function getPullRequest(input) {
 
   return {
     body: text,
-    image: image
+    image: image,
+    commits: pullRequest.commits,
+    changedFiles: pullRequest.changed_files,
+    additions: pullRequest.additions,
+    deletions: pullRequest.deletions,
   }
 }
 
@@ -162,6 +166,11 @@ async function post2Slack(input, message, previousPostTimestamp) {
     threadTimestamp = previousPostTimestamp
   }
 
+  let fields = '';
+  if (message.codeDetail.changedFiles) {
+    fields = createFields(message.codeDetail.commits, message.codeDetail.changedFiles, message.codeDetail.additions, message.codeDetail.deletions);
+  }
+
   const res = await axios({
     method: 'post',
     url: `${SLACK_API_BASE_URL}/chat.postMessage`,
@@ -180,6 +189,7 @@ async function post2Slack(input, message, previousPostTimestamp) {
           'title': message.title,
           'title_link': message.titleLink,
           'text': message.body,
+          'fields': fields,
           'image_url': message.image,
           'footer': input.footer,
           'footer_icon': input.footerIcon,
@@ -200,6 +210,21 @@ async function post2Slack(input, message, previousPostTimestamp) {
   }
 
   return res.data.ts; // return timestamp
+}
+
+function createFields(commits, changedFiles, additions, deletions) {
+  return [
+    {
+      'title': ':round_pushpin: Commits',
+      'value': commits,
+      'short': true
+    },
+    {
+      'title': ':page_facing_up: Changed files ( _Changed line_ )',
+      'value': `${changedFiles} ( _*+${additions}*_ _\`-${deletions}\`_ )`,
+      'short': true
+    },
+  ];
 }
 
 module.exports = {
