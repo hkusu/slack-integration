@@ -14,20 +14,25 @@ async function run(input) {
   }
 
   switch (input.eventName) {
-    case 'pull_request':
+    case 'pull_request': {
       await handlePullRequest(input);
       break;
-    case 'issues':
+    }
+    case 'issues': {
       await handleIssues(input);
       break;
-    case 'pull_request_review':
+    }
+    case 'pull_request_review': {
       const postTimestamp = await handlePullRequestReview(input);
       await handlePullRequestReviewComment(input, postTimestamp);
       break;
-    case 'issue_comment':
+    }
+    case 'issue_comment': {
       await handleIssueComment(input);
       break;
-    default:
+    }
+    default: {
+    }
   }
 }
 
@@ -41,32 +46,41 @@ async function handlePullRequest(input) {
   message.titleLink = input.event.pull_request.html_url;
 
   switch (input.event.action) {
-    case 'opened':
+    case 'opened': {
       if (input.event.pull_request.draft) {
         message.description = input.pullDraftOpenMessage;
         message.color = COLOR.DRAFT_GRAY;
       } else {
         message.description = input.pullOpenMessage;
         message.color = COLOR.OPEN_GREEN;
+        const { body, image } = await githubApi.getPullRequest(input);
+        message.body = body;
+        message.image = image;
       }
-      const { body, image } = await githubApi.getPullRequest(input);
-      message.body = body;
-      message.image = image;
       break;
-    case 'reopened':
+    }
+    case 'reopened': {
       if (input.event.pull_request.draft) {
         message.description = input.pullDraftReopenMessage;
         message.color = COLOR.DRAFT_GRAY;
       } else {
         message.description = input.pullReopenMessage;
         message.color = COLOR.OPEN_GREEN;
+        const { body, image } = await githubApi.getPullRequest(input);
+        message.body = body;
+        message.image = image;
       }
       break;
-    case 'ready_for_review':
+    }
+    case 'ready_for_review': {
       message.description = input.pullReadyMessage;
       message.color = COLOR.OPEN_GREEN;
+      const { body, image } = await githubApi.getPullRequest(input);
+      message.body = body;
+      message.image = image;
       break;
-    case 'closed':
+    }
+    case 'closed': {
       if (input.event.pull_request.merged) {
         message.description = input.pullMergeMessage;
         message.color = COLOR.MERGED_PURPLE;
@@ -75,8 +89,10 @@ async function handlePullRequest(input) {
         message.color = COLOR.CLOSED_RED;
       }
       break;
-    default:
+    }
+    default: {
       return;
+    }
   }
 
   await slackApi.post(input, message);
@@ -92,23 +108,30 @@ async function handleIssues(input) {
   message.titleLink = input.event.issue.html_url;
 
   switch (input.event.action) {
-    case 'opened':
+    case 'opened': {
       message.description = input.issueOpenMessage;
       message.color = COLOR.OPEN_GREEN;
       const { body, image } = await githubApi.getIssue(input);
       message.body = body;
       message.image = image;
       break;
-    case 'reopened':
+    }
+    case 'reopened': {
       message.description = input.issueReopenMessage;
       message.color = COLOR.OPEN_GREEN;
+      const { body, image } = await githubApi.getIssue(input);
+      message.body = body;
+      message.image = image;
       break;
-    case 'closed':
+    }
+    case 'closed': {
       message.description = input.issueCloseMessage;
       message.color = COLOR.CLOSED_RED;
       break;
-    default:
+    }
+    default: {
       return;
+    }
   }
 
   await slackApi.post(input, message);
@@ -127,27 +150,33 @@ async function handlePullRequestReview(input) {
   message.image = image;
 
   switch (input.event.action) {
-    case 'submitted':
+    case 'submitted': {
       switch (input.event.review.state) {
-        case 'approved':
+        case 'approved': {
           message.description = input.reviewApproveMessage;
           message.color = COLOR.OPEN_GREEN;
           break;
-        case 'changes_requested':
+        }
+        case 'changes_requested': {
           message.description = input.reviewRequestChangesMessage;
           message.color = COLOR.CLOSED_RED;
           break;
-        case 'commented':
+        }
+        case 'commented': {
           // Do not post if there is no message
           if (!message.body) return;
           message.description = input.reviewCommentMessage;
           break;
-        default:
+        }
+        default: {
           return;
+        }
       }
       break;
-    default:
+    }
+    default: {
       return;
+    }
   }
 
   return await slackApi.post(input, message); // return timestamp
@@ -186,7 +215,7 @@ async function handleIssueComment(input) {
   const message = createBaseMessage();
 
   switch (input.event.action) {
-    case 'created':
+    case 'created': {
       if (input.event.issue.pull_request) {
         message.description = input.pullCommentMessage;
       } else {
@@ -198,8 +227,10 @@ async function handleIssueComment(input) {
       message.body = body;
       message.image = image;
       break;
-    default:
+    }
+    default: {
       return;
+    }
   }
 
   await slackApi.post(input, message);
