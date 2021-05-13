@@ -33,31 +33,31 @@ inputs:
     required: false
   pull-open-message:
     description: ''
-    default: 'Pull request opened by <actor>'
+    default: 'Pull request opened by <actor> :sparkles:'
     required: false
   pull-reopen-message:
     description: ''
-    default: 'Pull request reopened by <actor>'
+    default: 'Pull request reopened by <actor> :recycle:'
     required: false
   pull-draft-open-message:
     description: ''
-    default: 'Pull request opened by <actor>'
+    default: 'Pull request opened by <actor> :memo:'
     required: false
   pull-draft-reopen-message:
     description: ''
-    default: 'Pull request reopened by <actor>'
+    default: 'Pull request reopened by <actor> :memo:'
     required: false
   pull-ready-message:
     description: ''
-    default: 'Pull request ready for review by <actor>'
+    default: 'Pull request ready for review by <actor> :sparkles:'
     required: false
   pull-close-message:
     description: ''
-    default: 'Pull request closed by <actor>'
+    default: 'Pull request closed by <actor> :heavy_multiplication_x:'
     required: false
   pull-merge-message:
     description: ''
-    default: 'Pull request merged by <actor>'
+    default: 'Pull request merged by <actor> :twisted_rightwards_arrows:'
     required: false
   pull-comment-message:
     description: ''
@@ -65,31 +65,31 @@ inputs:
     required: false
   issue-open-message:
     description: ''
-    default: 'Issue opened by <actor>'
+    default: 'Issue opened by <actor> :sparkles:'
     required: false
   issue-reopen-message:
     description: ''
-    default: 'Issue reopened by <actor>'
+    default: 'Issue reopened by <actor> :recycle:'
     required: false
   issue-close-message:
     description: ''
-    default: 'Issue closed by <actor>'
+    default: 'Issue closed by <actor> :heavy_multiplication_x:'
     required: false
   issue-comment-message:
     description: ''
     default: ''
     required: false
   review-approve-message:
-    description: '<actor> approved <author>''s pull request'
+    description: '<actor> approved <author>''s pull request :white_check_mark:'
     default: ''
     required: false
   review-request-changes-message:
-    description: '<actor> requested changes on <author>''s pull request'
+    description: '<actor> requested changes on <author>''s pull request :no_entry:'
     default: ''
     required: false
   review-comment-message:
     description: ''
-    default: '<actor> commented on <author>''s pull request'
+    default: '<actor> commented on <author>''s pull request :speech_balloon:'
     required: false
   app-name:
     description: ''
