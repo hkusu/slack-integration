@@ -43,7 +43,7 @@ if (NODE_ENV != 'local') {
   };
 } else {
   const event = {
-    action: 'submitted',
+    action: 'reopened',
     pull_request: {
       number: 3,
       title: 'pull request title',
@@ -116,7 +116,7 @@ if (NODE_ENV != 'local') {
     footer: '<https://github.com/hkusu/slack-integration|hkusu/slack-integration>',
     footerIcon: 'https://github.com/hkusu.png',
     threadingComments: 'true',
-    eventName: 'pull_request_review',
+    eventName: 'pull_request',
     event: JSON.stringify(event),
     githubToken: GITHUB_TOKEN,
   };
