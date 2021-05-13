@@ -53,9 +53,13 @@ async function handlePullRequest(input) {
       } else {
         message.description = input.pullOpenMessage;
         message.color = COLOR.OPEN_GREEN;
-        const { body, image } = await githubApi.getPullRequest(input);
+        const { body, image, commits, changedFiles, additions, deletions } = await githubApi.getPullRequest(input);
         message.body = body;
         message.image = image;
+        message.codeDetail.commits = commits;
+        message.codeDetail.changedFiles = changedFiles;
+        message.codeDetail.additions = additions;
+        message.codeDetail.deletions = deletions;
       }
       break;
     }
@@ -66,18 +70,26 @@ async function handlePullRequest(input) {
       } else {
         message.description = input.pullReopenMessage;
         message.color = COLOR.OPEN_GREEN;
-        const { body, image } = await githubApi.getPullRequest(input);
+        const { body, image, commits, changedFiles, additions, deletions } = await githubApi.getPullRequest(input);
         message.body = body;
         message.image = image;
+        message.codeDetail.commits = commits;
+        message.codeDetail.changedFiles = changedFiles;
+        message.codeDetail.additions = additions;
+        message.codeDetail.deletions = deletions;
       }
       break;
     }
     case 'ready_for_review': {
       message.description = input.pullReadyMessage;
       message.color = COLOR.OPEN_GREEN;
-      const { body, image } = await githubApi.getPullRequest(input);
+      const { body, image, commits, changedFiles, additions, deletions } = await githubApi.getPullRequest(input);
       message.body = body;
       message.image = image;
+      message.codeDetail.commits = commits;
+      message.codeDetail.changedFiles = changedFiles;
+      message.codeDetail.additions = additions;
+      message.codeDetail.deletions = deletions;
       break;
     }
     case 'closed': {
@@ -244,6 +256,12 @@ function createBaseMessage() {
     titleLink: '',
     body: '',
     image: '',
+    codeDetail: {
+      commits: 0,
+      changedFiles: 0,
+      additions: 0,
+      deletions: 0
+    },
   }
 }
 

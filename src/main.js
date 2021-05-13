@@ -45,7 +45,7 @@ if (NODE_ENV != 'local') {
   const event = {
     action: 'reopened',
     pull_request: {
-      number: 3,
+      number: 2,
       title: 'pull request title',
       html_url: 'https://github.com/hkusu/slack-integration-test/pull/2',
       body: 'pull request body',
