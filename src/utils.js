@@ -140,12 +140,20 @@ class GitHubError extends Error {
 
 async function post2Slack(message) {
 
-  message.description = message.description.replace(/<actor>/g, message.actor.name);
-  message.description = message.description.replace(/<author>/g, message.author.name)
+  let description = message.description;
+  description = description.replace(/<actor>/g, message.actor.name);
+  description = description.replace(/<author>/g, message.author.name)
 
-  let fields = null;
+  let fields = '';
   if (message.pullRequestDetail.shouldShow) {
     fields = createFields(message.pullRequestDetail);
+  }
+
+  let authorName = '', authorLink = '', authorIcon = '';
+  if (message.actor.shouldShow) {
+    authorName = message.actor.name;
+    authorLink = message.actor.link;
+    authorIcon = message.actor.icon;
   }
 
   const res = await axios({
@@ -155,14 +163,14 @@ async function post2Slack(message) {
       'channel': message.channel,
       'username': message.appName,
       'icon_url': message.appIcon,
-      'text': message.description,
+      'text': description,
       'attachments': [
         {
           'mrkdwn_in': ['text'],
           'color': message.color,
-          'author_name': message.actor.name,
-          'author_link': message.actor.link,
-          'author_icon': message.actor.icon,
+          'author_name': authorName,
+          'author_link': authorLink,
+          'author_icon': authorIcon,
           'title': message.title,
           'title_link': message.titleLink,
           'text': message.body,

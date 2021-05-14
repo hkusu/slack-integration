@@ -43,6 +43,9 @@ async function handlePullRequest(input) {
   const message = createBaseMessage(input);
 
   message.author.name = input.event.pull_request.user.login;
+  if (input.showPullActor != 'false') {
+    message.actor.shouldShow = true;
+  }
 
   message.title = `#${input.event.pull_request.number} ${input.event.pull_request.title}`;
   message.titleLink = input.event.pull_request.html_url;
@@ -126,6 +129,9 @@ async function handleIssues(input) {
   const message = createBaseMessage(input);
 
   message.author.name = input.event.issue.user.login;
+  if (input.showIssueActor != 'false') {
+    message.actor.shouldShow = true;
+  }
 
   message.title = `#${input.event.issue.number} ${input.event.issue.title}`;
   message.titleLink = input.event.issue.html_url;
@@ -167,6 +173,9 @@ async function handlePullRequestReview(input) {
   const message = createBaseMessage(input);
 
   message.author.name = input.event.pull_request.user.login;
+  if (input.showReviewActor != 'false') {
+    message.actor.shouldShow = true;
+  }
 
   message.title = `Review on #${input.event.pull_request.number} ${input.event.pull_request.title}`;
   message.titleLink = input.event.review.html_url;
@@ -221,6 +230,9 @@ async function handlePullRequestReviewComment(input, targetTimestamp) {
   for (const comment of comments) {
     const message = createBaseMessage(input);
     message.author.name = input.event.pull_request.user.login;
+    if (input.showPullCommentActor != 'false') {
+      message.actor.shouldShow = true;
+    }
     message.description = input.pullCommentMessage;
     message.title = `Comment on #${input.event.pull_request.number} ${input.event.pull_request.title}`;
     message.titleLink = comment.html_url;
@@ -244,6 +256,12 @@ async function handleIssueComment(input) {
   const message = createBaseMessage(input);
 
   message.author.name = input.event.issue.user.login;
+  if (input.event.issue.pull_request && input.showPullCommentActor != 'false') {
+    message.actor.shouldShow = true;
+  }
+  if (!input.event.issue.pull_request && input.showIssueCommentActor != 'false') {
+    message.actor.shouldShow = true;
+  }
 
   switch (input.event.action) {
     case 'created': {
@@ -279,6 +297,7 @@ function createBaseMessage(input) {
       name: '',
     },
     actor: {
+      shouldShow: false,
       name: input.event.sender.login,
       link: input.event.sender.html_url,
       icon: input.event.sender.avatar_url,
@@ -297,7 +316,7 @@ function createBaseMessage(input) {
       deletions: 0,
       url: '',
     },
-    targetTimestamp: null,
+    targetTimestamp: '',
   }
 }
 
