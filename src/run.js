@@ -257,6 +257,12 @@ async function handleIssueComment(input) {
 
 function createBaseMessage(input) {
   return {
+    channel: input.channel,
+    appName: input.appName,
+    appIcon: input.appIcon,
+    footer: input.footer,
+    footerIcon: input.footerIcon,
+    slackToken: input.slackToken,
     description: '',
     color: COLOR.BASE_BLACK,
     title: '',

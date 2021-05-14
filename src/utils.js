@@ -168,9 +168,9 @@ async function post2Slack(input, message) {
     method: 'post',
     url: `${SLACK_API_BASE_URL}/chat.postMessage`,
     data: {
-      'channel': input.channel,
-      'username': input.appName,
-      'icon_url': input.appIcon,
+      'channel': message.channel,
+      'username': message.appName,
+      'icon_url': message.appIcon,
       'text': message.description,
       'attachments': [
         {
@@ -184,8 +184,8 @@ async function post2Slack(input, message) {
           'text': message.body,
           'fields': fields,
           'image_url': message.image,
-          'footer': input.footer,
-          'footer_icon': input.footerIcon,
+          'footer': message.footer,
+          'footer_icon': message.footerIcon,
           'ts': Math.floor(new Date().getTime() / 1000),
         }
       ],
@@ -194,7 +194,7 @@ async function post2Slack(input, message) {
     responseType: 'json',
     headers: {
       'Content-Type': 'application/json; charset=utf-8',
-      'Authorization': `Bearer ${input.slackToken}`,
+      'Authorization': `Bearer ${message.slackToken}`,
     },
   });
 
