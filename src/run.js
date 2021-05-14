@@ -50,10 +50,6 @@ async function handlePullRequest(input) {
   message.title = `#${input.event.pull_request.number} ${input.event.pull_request.title}`;
   message.titleLink = input.event.pull_request.html_url;
 
-  if (input.showPullDetail != 'false') {
-    message.pullRequestDetail.shouldShow = true;
-  }
-
   switch (input.event.action) {
     case 'opened': {
       if (input.event.pull_request.draft) {
@@ -65,6 +61,9 @@ async function handlePullRequest(input) {
         const { body, image } = await githubApi.getPullRequest(input.event, input.githubToken);
         message.body = body;
         message.image = image;
+        if (input.showPullDetail != 'false') {
+          message.pullRequestDetail.shouldShow = true;
+        }
         message.pullRequestDetail.commits = input.event.pull_request.commits;
         message.pullRequestDetail.changedFiles = input.event.pull_request.changed_files;
         message.pullRequestDetail.additions = input.event.pull_request.additions;
@@ -83,6 +82,9 @@ async function handlePullRequest(input) {
         const { body, image } = await githubApi.getPullRequest(input.event, input.githubToken);
         message.body = body;
         message.image = image;
+        if (input.showPullDetail != 'false') {
+          message.pullRequestDetail.shouldShow = true;
+        }
         message.pullRequestDetail.commits = input.event.pull_request.commits;
         message.pullRequestDetail.changedFiles = input.event.pull_request.changed_files;
         message.pullRequestDetail.additions = input.event.pull_request.additions;
@@ -97,6 +99,9 @@ async function handlePullRequest(input) {
       const { body, image, } = await githubApi.getPullRequest(input.event, input.githubToken);
       message.body = body;
       message.image = image;
+      if (input.showPullDetail != 'false') {
+        message.pullRequestDetail.shouldShow = true;
+      }
       message.pullRequestDetail.commits = input.event.pull_request.commits;
       message.pullRequestDetail.changedFiles = input.event.pull_request.changed_files;
       message.pullRequestDetail.additions = input.event.pull_request.additions;

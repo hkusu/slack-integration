@@ -125,7 +125,7 @@ if (NODE_ENV != 'local') {
     appIcon: '',
     footer: '<https://github.com/hkusu/slack-integration|hkusu/slack-integration>',
     footerIcon: 'https://github.com/hkusu.png',
-    showPullActor: 'false',
+    showPullActor: 'true',
     showIssueActor: 'true',
     showReviewActor: 'true',
     showPullCommentActor: 'true',
