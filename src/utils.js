@@ -164,7 +164,7 @@ async function post2Slack(input, message, previousPostTimestamp) {
 
   let fields = '';
   if (message.codeDetail.changedFiles) {
-    fields = createFields(message.codeDetail.commits, message.codeDetail.changedFiles, message.codeDetail.additions, message.codeDetail.deletions);
+    fields = createFields(input.event.pull_request.html_url, message.codeDetail.commits, message.codeDetail.changedFiles, message.codeDetail.additions, message.codeDetail.deletions);
   }
 
   const res = await axios({
@@ -208,16 +208,16 @@ async function post2Slack(input, message, previousPostTimestamp) {
   return res.data.ts; // return timestamp
 }
 
-function createFields(commits, changedFiles, additions, deletions) {
+function createFields(pullRequestUrl, commits, changedFiles, additions, deletions) {
   return [
     {
       'title': ':round_pushpin: Commits',
-      'value': commits,
+      'value': `<${pullRequestUrl}/commits|${commits}>`,
       'short': true
     },
     {
-      'title': ':page_facing_up: Changed files ( _lines_ )',
-      'value': `${changedFiles} ( _*+${additions}*_ _\`-${deletions}\`_ )`,
+      'title': ':page_facing_up: Changed files ( lines )',
+      'value': `<${pullRequestUrl}/files|${changedFiles}> ( +${additions} \`-${deletions}\` )`,
       'short': true
     },
   ];
