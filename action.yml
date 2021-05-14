@@ -105,6 +105,26 @@ inputs:
     description: ''
     default: ${{ github.event.repository.owner.avatar_url }}
     required: false
+  show-pull-actor:
+    description: ''
+    default: 'true'
+    required: false
+  show-issue-actor:
+    description: ''
+    default: 'true'
+    required: false
+  show-review-actor:
+    description: ''
+    default: 'true'
+    required: false
+  show-pull-comment-actor:
+    description: ''
+    default: 'true'
+    required: false
+  show-issue-comment-actor:
+    description: ''
+    default: 'true'
+    required: false
   thread-comments:
     description: ''
     default: 'false'
