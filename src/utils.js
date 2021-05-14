@@ -220,7 +220,7 @@ function createFields(commits, changedFiles, additions, deletions) {
       'short': true
     },
     {
-      'title': ':page_facing_up: Changed files ( _Changed line_ )',
+      'title': ':page_facing_up: Changed files ( _lines_ )',
       'value': `${changedFiles} ( _*+${additions}*_ _\`-${deletions}\`_ )`,
       'short': true
     },
