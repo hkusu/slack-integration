@@ -140,6 +140,8 @@ class GitHubError extends Error {
 
 async function post2Slack(input, message, previousPostTimestamp) {
 
+  // TODO: Make it independent of input.
+
   const actor = input.event.sender.login;
   message.description = message.description.replace(/<actor>/g, actor);
 
@@ -163,8 +165,8 @@ async function post2Slack(input, message, previousPostTimestamp) {
   }
 
   let fields = '';
-  if (message.codeDetail.changedFiles) {
-    fields = createFields(input.event.pull_request.html_url, message.codeDetail.commits, message.codeDetail.changedFiles, message.codeDetail.additions, message.codeDetail.deletions);
+  if (message.showPullRequestDetail) {
+    fields = createFields(input.event.pull_request.html_url, message.pullRequestDetail.commits, message.pullRequestDetail.changedFiles, message.pullRequestDetail.additions, message.pullRequestDetail.deletions);
   }
 
   const res = await axios({

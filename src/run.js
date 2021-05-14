@@ -45,6 +45,10 @@ async function handlePullRequest(input) {
   message.title = `#${input.event.pull_request.number} ${input.event.pull_request.title}`;
   message.titleLink = input.event.pull_request.html_url;
 
+  if (input.showPullDetail != 'false') {
+    message.showPullRequestDetail = true;
+  }
+
   switch (input.event.action) {
     case 'opened': {
       if (input.event.pull_request.draft) {
@@ -56,10 +60,10 @@ async function handlePullRequest(input) {
         const { body, image } = await githubApi.getPullRequest(input);
         message.body = body;
         message.image = image;
-        message.codeDetail.commits = input.event.pull_request.commits;
-        message.codeDetail.changedFiles = input.event.pull_request.changed_files;
-        message.codeDetail.additions = input.event.pull_request.additions;
-        message.codeDetail.deletions = input.event.pull_request.deletions;
+        message.pullRequestDetail.commits = input.event.pull_request.commits;
+        message.pullRequestDetail.changedFiles = input.event.pull_request.changed_files;
+        message.pullRequestDetail.additions = input.event.pull_request.additions;
+        message.pullRequestDetail.deletions = input.event.pull_request.deletions;
       }
       break;
     }
@@ -73,10 +77,10 @@ async function handlePullRequest(input) {
         const { body, image } = await githubApi.getPullRequest(input);
         message.body = body;
         message.image = image;
-        message.codeDetail.commits = input.event.pull_request.commits;
-        message.codeDetail.changedFiles = input.event.pull_request.changed_files;
-        message.codeDetail.additions = input.event.pull_request.additions;
-        message.codeDetail.deletions = input.event.pull_request.deletions;
+        message.pullRequestDetail.commits = input.event.pull_request.commits;
+        message.pullRequestDetail.changedFiles = input.event.pull_request.changed_files;
+        message.pullRequestDetail.additions = input.event.pull_request.additions;
+        message.pullRequestDetail.deletions = input.event.pull_request.deletions;
       }
       break;
     }
@@ -86,10 +90,10 @@ async function handlePullRequest(input) {
       const { body, image, } = await githubApi.getPullRequest(input);
       message.body = body;
       message.image = image;
-      message.codeDetail.commits = input.event.pull_request.commits;
-      message.codeDetail.changedFiles = input.event.pull_request.changed_files;
-      message.codeDetail.additions = input.event.pull_request.additions;
-      message.codeDetail.deletions = input.event.pull_request.deletions;
+      message.pullRequestDetail.commits = input.event.pull_request.commits;
+      message.pullRequestDetail.changedFiles = input.event.pull_request.changed_files;
+      message.pullRequestDetail.additions = input.event.pull_request.additions;
+      message.pullRequestDetail.deletions = input.event.pull_request.deletions;
       break;
     }
     case 'closed': {
@@ -256,11 +260,12 @@ function createBaseMessage() {
     titleLink: '',
     body: '',
     image: '',
-    codeDetail: {
+    showPullRequestDetail: false,
+    pullRequestDetail: {
       commits: 0,
       changedFiles: 0,
       additions: 0,
-      deletions: 0
+      deletions: 0,
     },
   }
 }
