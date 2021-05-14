@@ -138,7 +138,7 @@ class GitHubError extends Error {
   }
 }
 
-async function post2Slack(input, message, previousPostTimestamp) {
+async function post2Slack(input, message) {
 
   // TODO: Make it independent of input.
 
@@ -159,12 +159,7 @@ async function post2Slack(input, message, previousPostTimestamp) {
   }
   message.description = message.description.replace(/<author>/g, author)
 
-  let threadTimestamp = null;
-  if (input.threadingComments == 'true' && previousPostTimestamp) {
-    threadTimestamp = previousPostTimestamp
-  }
-
-  let fields = '';
+  let fields = null;
   if (message.showPullRequestDetail) {
     fields = createFields(input.event.pull_request.html_url, message.pullRequestDetail.commits, message.pullRequestDetail.changedFiles, message.pullRequestDetail.additions, message.pullRequestDetail.deletions);
   }
@@ -194,7 +189,7 @@ async function post2Slack(input, message, previousPostTimestamp) {
           'ts': Math.floor(new Date().getTime() / 1000),
         }
       ],
-      'thread_ts': threadTimestamp,
+      'thread_ts': message.targetTimestamp,
     },
     responseType: 'json',
     headers: {

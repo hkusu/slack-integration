@@ -23,8 +23,8 @@ async function run(input) {
       break;
     }
     case 'pull_request_review': {
-      const postTimestamp = await handlePullRequestReview(input);
-      await handlePullRequestReviewComment(input, postTimestamp);
+      const timestamp = await handlePullRequestReview(input);
+      await handlePullRequestReviewComment(input, timestamp);
       break;
     }
     case 'issue_comment': {
@@ -201,7 +201,7 @@ async function handlePullRequestReview(input) {
 /*
   Don't use 'pull_request_review_comment' events, uselessly launch GitHub Actions work flows.
 */
-async function handlePullRequestReviewComment(input, previousPostTimestamp) {
+async function handlePullRequestReviewComment(input, targetTimestamp) {
 
   if (input.subscribePullComments != 'true') return;
 
@@ -216,9 +216,12 @@ async function handlePullRequestReviewComment(input, previousPostTimestamp) {
     message.titleLink = comment.html_url;
     message.body = comment.body;
     message.image = comment.image;
-    const postTimestamp = await slackApi.post(input, message, previousPostTimestamp);
-    if (!previousPostTimestamp) {
-      previousPostTimestamp = postTimestamp;
+    if (targetTimestamp && input.threadingComments == 'true') {
+      message.targetTimestamp = targetTimestamp;
+    }
+    const timestamp = await slackApi.post(input, message);
+    if (!targetTimestamp) {
+      targetTimestamp = timestamp;
     }
   }
 }
@@ -267,6 +270,7 @@ function createBaseMessage() {
       additions: 0,
       deletions: 0,
     },
+    targetTimestamp: null,
   }
 }
 
