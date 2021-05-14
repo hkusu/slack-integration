@@ -64,6 +64,7 @@ async function handlePullRequest(input) {
         message.pullRequestDetail.changedFiles = input.event.pull_request.changed_files;
         message.pullRequestDetail.additions = input.event.pull_request.additions;
         message.pullRequestDetail.deletions = input.event.pull_request.deletions;
+        message.pullRequestDetail.url = input.event.pull_request.html_url;
       }
       break;
     }
@@ -81,6 +82,7 @@ async function handlePullRequest(input) {
         message.pullRequestDetail.changedFiles = input.event.pull_request.changed_files;
         message.pullRequestDetail.additions = input.event.pull_request.additions;
         message.pullRequestDetail.deletions = input.event.pull_request.deletions;
+        message.pullRequestDetail.url = input.event.pull_request.html_url;
       }
       break;
     }
@@ -94,6 +96,7 @@ async function handlePullRequest(input) {
       message.pullRequestDetail.changedFiles = input.event.pull_request.changed_files;
       message.pullRequestDetail.additions = input.event.pull_request.additions;
       message.pullRequestDetail.deletions = input.event.pull_request.deletions;
+      message.pullRequestDetail.url = input.event.pull_request.html_url;
       break;
     }
     case 'closed': {
@@ -275,7 +278,7 @@ function createBaseMessage(input) {
       changedFiles: 0,
       additions: 0,
       deletions: 0,
-      url: input.event.pull_request.html_url,
+      url: '',
     },
     targetTimestamp: null,
   }
