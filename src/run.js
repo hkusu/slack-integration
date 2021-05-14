@@ -40,7 +40,7 @@ async function handlePullRequest(input) {
 
   if (input.subscribePulls != 'true') return;
 
-  const message = createBaseMessage();
+  const message = createBaseMessage(input);
 
   message.title = `#${input.event.pull_request.number} ${input.event.pull_request.title}`;
   message.titleLink = input.event.pull_request.html_url;
@@ -118,7 +118,7 @@ async function handleIssues(input) {
 
   if (input.subscribeIssues != 'true') return;
 
-  const message = createBaseMessage();
+  const message = createBaseMessage(input);
 
   message.title = `#${input.event.issue.number} ${input.event.issue.title}`;
   message.titleLink = input.event.issue.html_url;
@@ -157,7 +157,7 @@ async function handlePullRequestReview(input) {
 
   if (input.subscribeReviews != 'true') return;
 
-  const message = createBaseMessage();
+  const message = createBaseMessage(input);
 
   message.title = `Review on #${input.event.pull_request.number} ${input.event.pull_request.title}`;
   message.titleLink = input.event.review.html_url;
@@ -210,7 +210,7 @@ async function handlePullRequestReviewComment(input, targetTimestamp) {
   const comments = await githubApi.getReviewComments(input);
 
   for (const comment of comments) {
-    const message = createBaseMessage();
+    const message = createBaseMessage(input);
     message.description = input.pullCommentMessage;
     message.title = `Comment on #${input.event.pull_request.number} ${input.event.pull_request.title}`;
     message.titleLink = comment.html_url;
@@ -231,7 +231,7 @@ async function handleIssueComment(input) {
   if (input.event.issue.pull_request && input.subscribePullComments != 'true') return;
   if (!input.event.issue.pull_request && input.subscribeIssueComments != 'true') return;
 
-  const message = createBaseMessage();
+  const message = createBaseMessage(input);
 
   switch (input.event.action) {
     case 'created': {
@@ -255,7 +255,7 @@ async function handleIssueComment(input) {
   await slackApi.post(input, message);
 }
 
-function createBaseMessage() {
+function createBaseMessage(input) {
   return {
     description: '',
     color: COLOR.BASE_BLACK,
@@ -269,6 +269,7 @@ function createBaseMessage() {
       changedFiles: 0,
       additions: 0,
       deletions: 0,
+      url: input.event.pull_request.html_url,
     },
     targetTimestamp: null,
   }
