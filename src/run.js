@@ -53,13 +53,13 @@ async function handlePullRequest(input) {
       } else {
         message.description = input.pullOpenMessage;
         message.color = COLOR.OPEN_GREEN;
-        const { body, image, commits, changedFiles, additions, deletions } = await githubApi.getPullRequest(input);
+        const { body, image } = await githubApi.getPullRequest(input);
         message.body = body;
         message.image = image;
-        message.codeDetail.commits = commits;
-        message.codeDetail.changedFiles = changedFiles;
-        message.codeDetail.additions = additions;
-        message.codeDetail.deletions = deletions;
+        message.codeDetail.commits = input.event.pull_request.commits;
+        message.codeDetail.changedFiles = input.event.pull_request.changed_files;
+        message.codeDetail.additions = input.event.pull_request.additions;
+        message.codeDetail.deletions = input.event.pull_request.deletions;
       }
       break;
     }
@@ -70,26 +70,26 @@ async function handlePullRequest(input) {
       } else {
         message.description = input.pullReopenMessage;
         message.color = COLOR.OPEN_GREEN;
-        const { body, image, commits, changedFiles, additions, deletions } = await githubApi.getPullRequest(input);
+        const { body, image } = await githubApi.getPullRequest(input);
         message.body = body;
         message.image = image;
-        message.codeDetail.commits = commits;
-        message.codeDetail.changedFiles = changedFiles;
-        message.codeDetail.additions = additions;
-        message.codeDetail.deletions = deletions;
+        message.codeDetail.commits = input.event.pull_request.commits;
+        message.codeDetail.changedFiles = input.event.pull_request.changed_files;
+        message.codeDetail.additions = input.event.pull_request.additions;
+        message.codeDetail.deletions = input.event.pull_request.deletions;
       }
       break;
     }
     case 'ready_for_review': {
       message.description = input.pullReadyMessage;
       message.color = COLOR.OPEN_GREEN;
-      const { body, image, commits, changedFiles, additions, deletions } = await githubApi.getPullRequest(input);
+      const { body, image, } = await githubApi.getPullRequest(input);
       message.body = body;
       message.image = image;
-      message.codeDetail.commits = commits;
-      message.codeDetail.changedFiles = changedFiles;
-      message.codeDetail.additions = additions;
-      message.codeDetail.deletions = deletions;
+      message.codeDetail.commits = input.event.pull_request.commits;
+      message.codeDetail.changedFiles = input.event.pull_request.changed_files;
+      message.codeDetail.additions = input.event.pull_request.additions;
+      message.codeDetail.deletions = input.event.pull_request.deletions;
       break;
     }
     case 'closed': {

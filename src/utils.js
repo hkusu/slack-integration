@@ -26,10 +26,6 @@ async function getPullRequest(input) {
   return {
     body: text,
     image: image,
-    commits: pullRequest.commits,
-    changedFiles: pullRequest.changed_files,
-    additions: pullRequest.additions,
-    deletions: pullRequest.deletions,
   }
 }
 

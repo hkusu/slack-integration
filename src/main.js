@@ -54,6 +54,10 @@ if (NODE_ENV != 'local') {
       user: {
         login: 'hkusu',
       },
+      commits: 4,
+      additions: 23,
+      deletions: 0,
+      changed_files: 3,
     },
     review: {
       body: 'review body',
