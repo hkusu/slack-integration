@@ -216,8 +216,8 @@ function createFields(pullRequestUrl, commits, changedFiles, additions, deletion
       'short': true
     },
     {
-      'title': ':page_facing_up: Changed files ( lines )',
-      'value': `<${pullRequestUrl}/files|${changedFiles}> ( +${additions} \`-${deletions}\` )`,
+      'title': ':page_facing_up: Changed files ( _lines_ )',
+      'value': `<${pullRequestUrl}/files|${changedFiles}> ( _+${additions}_ _\`-${deletions}\`_ )`,
       'short': true
     },
   ];
