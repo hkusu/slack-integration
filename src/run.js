@@ -119,7 +119,7 @@ async function handlePullRequest(input) {
     }
   }
 
-  await slackApi.post(message);
+  await slackApi.post(message, input.slackToken);
 }
 
 async function handleIssues(input) {
@@ -163,7 +163,7 @@ async function handleIssues(input) {
     }
   }
 
-  await slackApi.post(message);
+  await slackApi.post(message, input.slackToken);
 }
 
 async function handlePullRequestReview(input) {
@@ -213,7 +213,7 @@ async function handlePullRequestReview(input) {
     }
   }
 
-  return await slackApi.post(message); // return timestamp
+  return await slackApi.post(message, input.slackToken); // return timestamp
 }
 
 /*
@@ -241,7 +241,7 @@ async function handlePullRequestReviewComment(input, targetTimestamp) {
     if (targetTimestamp && input.threadingComments == 'true') {
       message.targetTimestamp = targetTimestamp;
     }
-    const timestamp = await slackApi.post(message);
+    const timestamp = await slackApi.post(message, input.slackToken);
     if (!targetTimestamp) {
       targetTimestamp = timestamp;
     }
@@ -282,7 +282,7 @@ async function handleIssueComment(input) {
     }
   }
 
-  await slackApi.post(message);
+  await slackApi.post(message, input.slackToken);
 }
 
 function createBaseMessage(input) {
@@ -292,7 +292,6 @@ function createBaseMessage(input) {
     appIcon: input.appIcon,
     footer: input.footer,
     footerIcon: input.footerIcon,
-    slackToken: input.slackToken,
     author: {
       name: '',
     },

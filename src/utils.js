@@ -138,7 +138,7 @@ class GitHubError extends Error {
   }
 }
 
-async function post2Slack(message) {
+async function post2Slack(message, token) {
 
   let description = message.description;
   description = description.replace(/<actor>/g, message.actor.name);
@@ -186,7 +186,7 @@ async function post2Slack(message) {
     responseType: 'json',
     headers: {
       'Content-Type': 'application/json; charset=utf-8',
-      'Authorization': `Bearer ${message.slackToken}`,
+      'Authorization': `Bearer ${token}`,
     },
   });
 
