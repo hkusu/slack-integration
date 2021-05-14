@@ -59,7 +59,7 @@ async function handlePullRequest(input) {
       } else {
         message.description = input.pullOpenMessage;
         message.color = COLOR.OPEN_GREEN;
-        const { body, image } = await githubApi.getPullRequest(input);
+        const { body, image } = await githubApi.getPullRequest(input.event, input.githubToken);
         message.body = body;
         message.image = image;
         message.pullRequestDetail.commits = input.event.pull_request.commits;
@@ -77,7 +77,7 @@ async function handlePullRequest(input) {
       } else {
         message.description = input.pullReopenMessage;
         message.color = COLOR.OPEN_GREEN;
-        const { body, image } = await githubApi.getPullRequest(input);
+        const { body, image } = await githubApi.getPullRequest(input.event, input.githubToken);
         message.body = body;
         message.image = image;
         message.pullRequestDetail.commits = input.event.pull_request.commits;
@@ -91,7 +91,7 @@ async function handlePullRequest(input) {
     case 'ready_for_review': {
       message.description = input.pullReadyMessage;
       message.color = COLOR.OPEN_GREEN;
-      const { body, image, } = await githubApi.getPullRequest(input);
+      const { body, image, } = await githubApi.getPullRequest(input.event, input.githubToken);
       message.body = body;
       message.image = image;
       message.pullRequestDetail.commits = input.event.pull_request.commits;
@@ -134,7 +134,7 @@ async function handleIssues(input) {
     case 'opened': {
       message.description = input.issueOpenMessage;
       message.color = COLOR.OPEN_GREEN;
-      const { body, image } = await githubApi.getIssue(input);
+      const { body, image } = await githubApi.getIssue(input.event, input.githubToken);
       message.body = body;
       message.image = image;
       break;
@@ -142,7 +142,7 @@ async function handleIssues(input) {
     case 'reopened': {
       message.description = input.issueReopenMessage;
       message.color = COLOR.OPEN_GREEN;
-      const { body, image } = await githubApi.getIssue(input);
+      const { body, image } = await githubApi.getIssue(input.event, input.githubToken);
       message.body = body;
       message.image = image;
       break;
@@ -170,7 +170,7 @@ async function handlePullRequestReview(input) {
 
   message.title = `Review on #${input.event.pull_request.number} ${input.event.pull_request.title}`;
   message.titleLink = input.event.review.html_url;
-  const { body, image } = await githubApi.getReview(input);
+  const { body, image } = await githubApi.getReview(input.event, input.githubToken);
   message.body = body;
   message.image = image;
 
@@ -216,7 +216,7 @@ async function handlePullRequestReviewComment(input, targetTimestamp) {
 
   if (input.event.action != 'submitted') return;
 
-  const comments = await githubApi.getReviewComments(input);
+  const comments = await githubApi.getReviewComments(input.event, input.githubToken);
 
   for (const comment of comments) {
     const message = createBaseMessage(input);
@@ -254,7 +254,7 @@ async function handleIssueComment(input) {
       }
       message.title = `Comment on #${input.event.issue.number} ${input.event.issue.title}`;
       message.titleLink = input.event.comment.html_url;
-      const { body, image } = await githubApi.getComment(input);
+      const { body, image } = await githubApi.getComment(input.event, input.githubToken);
       message.body = body;
       message.image = image;
       break;

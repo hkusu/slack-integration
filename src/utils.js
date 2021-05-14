@@ -4,16 +4,16 @@ const mrkdwn = require('html-to-mrkdwn');
 const GITHUB_API_BASE_URL = 'https://api.github.com';
 const SLACK_API_BASE_URL = 'https://slack.com/api';
 
-async function getPullRequest(input) {
+async function getPullRequest(event, token) {
 
   let pullRequest;
 
   try {
     const res = await axios({
-      url: `${GITHUB_API_BASE_URL}/repos/${input.event.repository.full_name}/pulls/${input.event.pull_request.number}`,
+      url: `${GITHUB_API_BASE_URL}/repos/${event.repository.full_name}/pulls/${event.pull_request.number}`,
       headers: {
         'Accept': 'application/vnd.github.3.html+json',
-        'Authorization': `token ${input.githubToken}`,
+        'Authorization': `token ${token}`,
       },
     });
     pullRequest = res.data
@@ -29,16 +29,16 @@ async function getPullRequest(input) {
   }
 }
 
-async function getIssue(input) {
+async function getIssue(event, token) {
 
   let issue;
 
   try {
     const res = await axios({
-      url: `${GITHUB_API_BASE_URL}/repos/${input.event.repository.full_name}/issues/${input.event.issue.number}`,
+      url: `${GITHUB_API_BASE_URL}/repos/${event.repository.full_name}/issues/${event.issue.number}`,
       headers: {
         'Accept': 'application/vnd.github.3.html+json',
-        'Authorization': `token ${input.githubToken}`,
+        'Authorization': `token ${token}`,
       },
     });
     issue = res.data
@@ -54,16 +54,16 @@ async function getIssue(input) {
   }
 }
 
-async function getReview(input) {
+async function getReview(event, token) {
 
   let review;
 
   try {
     const res = await axios({
-      url: `${GITHUB_API_BASE_URL}/repos/${input.event.repository.full_name}/pulls/${input.event.pull_request.number}/reviews/${input.event.review.id}`,
+      url: `${GITHUB_API_BASE_URL}/repos/${event.repository.full_name}/pulls/${event.pull_request.number}/reviews/${event.review.id}`,
       headers: {
         'Accept': 'application/vnd.github.3.html+json',
-        'Authorization': `token ${input.githubToken}`,
+        'Authorization': `token ${token}`,
       },
     });
     review = res.data
@@ -79,16 +79,16 @@ async function getReview(input) {
   }
 }
 
-async function getComment(input) {
+async function getComment(event, token) {
 
   let comment;
 
   try {
     const res = await axios({
-      url: `${GITHUB_API_BASE_URL}/repos/${input.event.repository.full_name}/issues/comments/${input.event.comment.id}`,
+      url: `${GITHUB_API_BASE_URL}/repos/${event.repository.full_name}/issues/comments/${event.comment.id}`,
       headers: {
         'Accept': 'application/vnd.github.3.html+json',
-        'Authorization': `token ${input.githubToken}`,
+        'Authorization': `token ${token}`,
       },
     });
     comment = res.data
@@ -104,16 +104,16 @@ async function getComment(input) {
   }
 }
 
-async function getReviewComments(input) {
+async function getReviewComments(event, token) {
 
   let comments;
 
   try {
     const res = await axios({
-      url: `${GITHUB_API_BASE_URL}/repos/${input.event.repository.full_name}/pulls/${input.event.pull_request.number}/reviews/${input.event.review.id}/comments`,
+      url: `${GITHUB_API_BASE_URL}/repos/${event.repository.full_name}/pulls/${event.pull_request.number}/reviews/${event.review.id}/comments`,
       headers: {
         'Accept': 'application/vnd.github.3.html+json',
-        'Authorization': `token ${input.githubToken}`,
+        'Authorization': `token ${token}`,
       },
     });
     comments = res.data
