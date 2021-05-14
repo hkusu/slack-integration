@@ -160,7 +160,7 @@ async function post2Slack(input, message) {
   message.description = message.description.replace(/<author>/g, author)
 
   let fields = null;
-  if (message.showPullRequestDetail) {
+  if (message.pullRequestDetail.shouldShow) {
     fields = createFields(message.pullRequestDetail);
   }
 

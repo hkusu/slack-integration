@@ -46,7 +46,7 @@ async function handlePullRequest(input) {
   message.titleLink = input.event.pull_request.html_url;
 
   if (input.showPullDetail != 'false') {
-    message.showPullRequestDetail = true;
+    message.pullRequestDetail.shouldShow = true;
   }
 
   switch (input.event.action) {
@@ -272,8 +272,8 @@ function createBaseMessage(input) {
     titleLink: '',
     body: '',
     image: '',
-    showPullRequestDetail: false,
     pullRequestDetail: {
+      shouldShow: false,
       commits: 0,
       changedFiles: 0,
       additions: 0,
