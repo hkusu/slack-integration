@@ -42,6 +42,8 @@ async function handlePullRequest(input) {
 
   const message = createBaseMessage(input);
 
+  message.author.name = input.event.pull_request.user.login;
+
   message.title = `#${input.event.pull_request.number} ${input.event.pull_request.title}`;
   message.titleLink = input.event.pull_request.html_url;
 
@@ -114,7 +116,7 @@ async function handlePullRequest(input) {
     }
   }
 
-  await slackApi.post(input, message);
+  await slackApi.post(message);
 }
 
 async function handleIssues(input) {
@@ -122,6 +124,8 @@ async function handleIssues(input) {
   if (input.subscribeIssues != 'true') return;
 
   const message = createBaseMessage(input);
+
+  message.author.name = input.event.issue.user.login;
 
   message.title = `#${input.event.issue.number} ${input.event.issue.title}`;
   message.titleLink = input.event.issue.html_url;
@@ -153,7 +157,7 @@ async function handleIssues(input) {
     }
   }
 
-  await slackApi.post(input, message);
+  await slackApi.post(message);
 }
 
 async function handlePullRequestReview(input) {
@@ -161,6 +165,8 @@ async function handlePullRequestReview(input) {
   if (input.subscribeReviews != 'true') return;
 
   const message = createBaseMessage(input);
+
+  message.author.name = input.event.pull_request.user.login;
 
   message.title = `Review on #${input.event.pull_request.number} ${input.event.pull_request.title}`;
   message.titleLink = input.event.review.html_url;
@@ -198,7 +204,7 @@ async function handlePullRequestReview(input) {
     }
   }
 
-  return await slackApi.post(input, message); // return timestamp
+  return await slackApi.post(message); // return timestamp
 }
 
 /*
@@ -214,6 +220,7 @@ async function handlePullRequestReviewComment(input, targetTimestamp) {
 
   for (const comment of comments) {
     const message = createBaseMessage(input);
+    message.author.name = input.event.pull_request.user.login;
     message.description = input.pullCommentMessage;
     message.title = `Comment on #${input.event.pull_request.number} ${input.event.pull_request.title}`;
     message.titleLink = comment.html_url;
@@ -222,7 +229,7 @@ async function handlePullRequestReviewComment(input, targetTimestamp) {
     if (targetTimestamp && input.threadingComments == 'true') {
       message.targetTimestamp = targetTimestamp;
     }
-    const timestamp = await slackApi.post(input, message);
+    const timestamp = await slackApi.post(message);
     if (!targetTimestamp) {
       targetTimestamp = timestamp;
     }
@@ -235,6 +242,8 @@ async function handleIssueComment(input) {
   if (!input.event.issue.pull_request && input.subscribeIssueComments != 'true') return;
 
   const message = createBaseMessage(input);
+
+  message.author.name = input.event.issue.user.login;
 
   switch (input.event.action) {
     case 'created': {
@@ -255,7 +264,7 @@ async function handleIssueComment(input) {
     }
   }
 
-  await slackApi.post(input, message);
+  await slackApi.post(message);
 }
 
 function createBaseMessage(input) {
@@ -266,6 +275,14 @@ function createBaseMessage(input) {
     footer: input.footer,
     footerIcon: input.footerIcon,
     slackToken: input.slackToken,
+    author: {
+      name: '',
+    },
+    actor: {
+      name: input.event.sender.login,
+      link: input.event.sender.html_url,
+      icon: input.event.sender.avatar_url,
+    },
     description: '',
     color: COLOR.BASE_BLACK,
     title: '',

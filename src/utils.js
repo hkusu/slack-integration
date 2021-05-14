@@ -138,26 +138,10 @@ class GitHubError extends Error {
   }
 }
 
-async function post2Slack(input, message) {
+async function post2Slack(message) {
 
-  // TODO: Make it independent of input.
-
-  const actor = input.event.sender.login;
-  message.description = message.description.replace(/<actor>/g, actor);
-
-  let author = '';
-  switch (input.eventName) {
-    case 'pull_request':
-    case 'pull_request_review':
-      author = input.event.pull_request.user.login;
-      break;
-    case 'issues':
-    case 'issue_comment':
-      author = input.event.issue.user.login;
-      break;
-    default:
-  }
-  message.description = message.description.replace(/<author>/g, author)
+  message.description = message.description.replace(/<actor>/g, message.actor.name);
+  message.description = message.description.replace(/<author>/g, message.author.name)
 
   let fields = null;
   if (message.pullRequestDetail.shouldShow) {
@@ -176,9 +160,9 @@ async function post2Slack(input, message) {
         {
           'mrkdwn_in': ['text'],
           'color': message.color,
-          'author_name': input.event.sender.login,
-          'author_link': input.event.sender.html_url,
-          'author_icon': input.event.sender.avatar_url,
+          'author_name': message.actor.name,
+          'author_link': message.actor.link,
+          'author_icon': message.actor.icon,
           'title': message.title,
           'title_link': message.titleLink,
           'text': message.body,
