@@ -11,23 +11,23 @@ inputs:
   channel:
     description: ''
     required: true
-  pulls:
+  subscribe-pulls:
     description: ''
     default: 'false'
     required: false
-  issues:
+  subscribe-issues:
     description: ''
     default: 'false'
     required: false
-  reviews:
+  subscribe-reviews:
     description: ''
     default: 'false'
     required: false
-  pull-comments:
+  subscribe-pull-comments:
     description: ''
     default: 'false'
     required: false
-  issue-comments:
+  subscribe-issue-comments:
     description: ''
     default: 'false'
     required: false
@@ -108,6 +108,10 @@ inputs:
   thread-comments:
     description: ''
     default: 'false'
+    required: false
+  show-pull-detail:
+    description: ''
+    default: 'true'
     required: false
   event-name:
     description: ''

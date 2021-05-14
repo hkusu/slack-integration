@@ -23,8 +23,8 @@ async function run(input) {
       break;
     }
     case 'pull_request_review': {
-      const postTimestamp = await handlePullRequestReview(input);
-      await handlePullRequestReviewComment(input, postTimestamp);
+      const timestamp = await handlePullRequestReview(input);
+      await handlePullRequestReviewComment(input, timestamp);
       break;
     }
     case 'issue_comment': {
@@ -40,10 +40,16 @@ async function handlePullRequest(input) {
 
   if (input.subscribePulls != 'true') return;
 
-  const message = createBaseMessage();
+  const message = createBaseMessage(input);
+
+  message.author.name = input.event.pull_request.user.login;
 
   message.title = `#${input.event.pull_request.number} ${input.event.pull_request.title}`;
   message.titleLink = input.event.pull_request.html_url;
+
+  if (input.showPullDetail != 'false') {
+    message.pullRequestDetail.shouldShow = true;
+  }
 
   switch (input.event.action) {
     case 'opened': {
@@ -53,13 +59,14 @@ async function handlePullRequest(input) {
       } else {
         message.description = input.pullOpenMessage;
         message.color = COLOR.OPEN_GREEN;
-        const { body, image, commits, changedFiles, additions, deletions } = await githubApi.getPullRequest(input);
+        const { body, image } = await githubApi.getPullRequest(input.event, input.githubToken);
         message.body = body;
         message.image = image;
-        message.codeDetail.commits = commits;
-        message.codeDetail.changedFiles = changedFiles;
-        message.codeDetail.additions = additions;
-        message.codeDetail.deletions = deletions;
+        message.pullRequestDetail.commits = input.event.pull_request.commits;
+        message.pullRequestDetail.changedFiles = input.event.pull_request.changed_files;
+        message.pullRequestDetail.additions = input.event.pull_request.additions;
+        message.pullRequestDetail.deletions = input.event.pull_request.deletions;
+        message.pullRequestDetail.url = input.event.pull_request.html_url;
       }
       break;
     }
@@ -70,26 +77,28 @@ async function handlePullRequest(input) {
       } else {
         message.description = input.pullReopenMessage;
         message.color = COLOR.OPEN_GREEN;
-        const { body, image, commits, changedFiles, additions, deletions } = await githubApi.getPullRequest(input);
+        const { body, image } = await githubApi.getPullRequest(input.event, input.githubToken);
         message.body = body;
         message.image = image;
-        message.codeDetail.commits = commits;
-        message.codeDetail.changedFiles = changedFiles;
-        message.codeDetail.additions = additions;
-        message.codeDetail.deletions = deletions;
+        message.pullRequestDetail.commits = input.event.pull_request.commits;
+        message.pullRequestDetail.changedFiles = input.event.pull_request.changed_files;
+        message.pullRequestDetail.additions = input.event.pull_request.additions;
+        message.pullRequestDetail.deletions = input.event.pull_request.deletions;
+        message.pullRequestDetail.url = input.event.pull_request.html_url;
       }
       break;
     }
     case 'ready_for_review': {
       message.description = input.pullReadyMessage;
       message.color = COLOR.OPEN_GREEN;
-      const { body, image, commits, changedFiles, additions, deletions } = await githubApi.getPullRequest(input);
+      const { body, image, } = await githubApi.getPullRequest(input.event, input.githubToken);
       message.body = body;
       message.image = image;
-      message.codeDetail.commits = commits;
-      message.codeDetail.changedFiles = changedFiles;
-      message.codeDetail.additions = additions;
-      message.codeDetail.deletions = deletions;
+      message.pullRequestDetail.commits = input.event.pull_request.commits;
+      message.pullRequestDetail.changedFiles = input.event.pull_request.changed_files;
+      message.pullRequestDetail.additions = input.event.pull_request.additions;
+      message.pullRequestDetail.deletions = input.event.pull_request.deletions;
+      message.pullRequestDetail.url = input.event.pull_request.html_url;
       break;
     }
     case 'closed': {
@@ -107,14 +116,16 @@ async function handlePullRequest(input) {
     }
   }
 
-  await slackApi.post(input, message);
+  await slackApi.post(message);
 }
 
 async function handleIssues(input) {
 
   if (input.subscribeIssues != 'true') return;
 
-  const message = createBaseMessage();
+  const message = createBaseMessage(input);
+
+  message.author.name = input.event.issue.user.login;
 
   message.title = `#${input.event.issue.number} ${input.event.issue.title}`;
   message.titleLink = input.event.issue.html_url;
@@ -123,7 +134,7 @@ async function handleIssues(input) {
     case 'opened': {
       message.description = input.issueOpenMessage;
       message.color = COLOR.OPEN_GREEN;
-      const { body, image } = await githubApi.getIssue(input);
+      const { body, image } = await githubApi.getIssue(input.event, input.githubToken);
       message.body = body;
       message.image = image;
       break;
@@ -131,7 +142,7 @@ async function handleIssues(input) {
     case 'reopened': {
       message.description = input.issueReopenMessage;
       message.color = COLOR.OPEN_GREEN;
-      const { body, image } = await githubApi.getIssue(input);
+      const { body, image } = await githubApi.getIssue(input.event, input.githubToken);
       message.body = body;
       message.image = image;
       break;
@@ -146,18 +157,20 @@ async function handleIssues(input) {
     }
   }
 
-  await slackApi.post(input, message);
+  await slackApi.post(message);
 }
 
 async function handlePullRequestReview(input) {
 
   if (input.subscribeReviews != 'true') return;
 
-  const message = createBaseMessage();
+  const message = createBaseMessage(input);
+
+  message.author.name = input.event.pull_request.user.login;
 
   message.title = `Review on #${input.event.pull_request.number} ${input.event.pull_request.title}`;
   message.titleLink = input.event.review.html_url;
-  const { body, image } = await githubApi.getReview(input);
+  const { body, image } = await githubApi.getReview(input.event, input.githubToken);
   message.body = body;
   message.image = image;
 
@@ -191,30 +204,34 @@ async function handlePullRequestReview(input) {
     }
   }
 
-  return await slackApi.post(input, message); // return timestamp
+  return await slackApi.post(message); // return timestamp
 }
 
 /*
   Don't use 'pull_request_review_comment' events, uselessly launch GitHub Actions work flows.
 */
-async function handlePullRequestReviewComment(input, previousPostTimestamp) {
+async function handlePullRequestReviewComment(input, targetTimestamp) {
 
   if (input.subscribePullComments != 'true') return;
 
   if (input.event.action != 'submitted') return;
 
-  const comments = await githubApi.getReviewComments(input);
+  const comments = await githubApi.getReviewComments(input.event, input.githubToken);
 
   for (const comment of comments) {
-    const message = createBaseMessage();
+    const message = createBaseMessage(input);
+    message.author.name = input.event.pull_request.user.login;
     message.description = input.pullCommentMessage;
     message.title = `Comment on #${input.event.pull_request.number} ${input.event.pull_request.title}`;
     message.titleLink = comment.html_url;
     message.body = comment.body;
     message.image = comment.image;
-    const postTimestamp = await slackApi.post(input, message, previousPostTimestamp);
-    if (!previousPostTimestamp) {
-      previousPostTimestamp = postTimestamp;
+    if (targetTimestamp && input.threadingComments == 'true') {
+      message.targetTimestamp = targetTimestamp;
+    }
+    const timestamp = await slackApi.post(message);
+    if (!targetTimestamp) {
+      targetTimestamp = timestamp;
     }
   }
 }
@@ -224,7 +241,9 @@ async function handleIssueComment(input) {
   if (input.event.issue.pull_request && input.subscribePullComments != 'true') return;
   if (!input.event.issue.pull_request && input.subscribeIssueComments != 'true') return;
 
-  const message = createBaseMessage();
+  const message = createBaseMessage(input);
+
+  message.author.name = input.event.issue.user.login;
 
   switch (input.event.action) {
     case 'created': {
@@ -235,7 +254,7 @@ async function handleIssueComment(input) {
       }
       message.title = `Comment on #${input.event.issue.number} ${input.event.issue.title}`;
       message.titleLink = input.event.comment.html_url;
-      const { body, image } = await githubApi.getComment(input);
+      const { body, image } = await githubApi.getComment(input.event, input.githubToken);
       message.body = body;
       message.image = image;
       break;
@@ -245,23 +264,40 @@ async function handleIssueComment(input) {
     }
   }
 
-  await slackApi.post(input, message);
+  await slackApi.post(message);
 }
 
-function createBaseMessage() {
+function createBaseMessage(input) {
   return {
+    channel: input.channel,
+    appName: input.appName,
+    appIcon: input.appIcon,
+    footer: input.footer,
+    footerIcon: input.footerIcon,
+    slackToken: input.slackToken,
+    author: {
+      name: '',
+    },
+    actor: {
+      name: input.event.sender.login,
+      link: input.event.sender.html_url,
+      icon: input.event.sender.avatar_url,
+    },
     description: '',
     color: COLOR.BASE_BLACK,
     title: '',
     titleLink: '',
     body: '',
     image: '',
-    codeDetail: {
+    pullRequestDetail: {
+      shouldShow: false,
       commits: 0,
       changedFiles: 0,
       additions: 0,
-      deletions: 0
+      deletions: 0,
+      url: '',
     },
+    targetTimestamp: null,
   }
 }
 

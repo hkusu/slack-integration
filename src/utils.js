@@ -4,16 +4,16 @@ const mrkdwn = require('html-to-mrkdwn');
 const GITHUB_API_BASE_URL = 'https://api.github.com';
 const SLACK_API_BASE_URL = 'https://slack.com/api';
 
-async function getPullRequest(input) {
+async function getPullRequest(event, token) {
 
   let pullRequest;
 
   try {
     const res = await axios({
-      url: `${GITHUB_API_BASE_URL}/repos/${input.event.repository.full_name}/pulls/${input.event.pull_request.number}`,
+      url: `${GITHUB_API_BASE_URL}/repos/${event.repository.full_name}/pulls/${event.pull_request.number}`,
       headers: {
         'Accept': 'application/vnd.github.3.html+json',
-        'Authorization': `token ${input.githubToken}`,
+        'Authorization': `token ${token}`,
       },
     });
     pullRequest = res.data
@@ -26,23 +26,19 @@ async function getPullRequest(input) {
   return {
     body: text,
     image: image,
-    commits: pullRequest.commits,
-    changedFiles: pullRequest.changed_files,
-    additions: pullRequest.additions,
-    deletions: pullRequest.deletions,
   }
 }
 
-async function getIssue(input) {
+async function getIssue(event, token) {
 
   let issue;
 
   try {
     const res = await axios({
-      url: `${GITHUB_API_BASE_URL}/repos/${input.event.repository.full_name}/issues/${input.event.issue.number}`,
+      url: `${GITHUB_API_BASE_URL}/repos/${event.repository.full_name}/issues/${event.issue.number}`,
       headers: {
         'Accept': 'application/vnd.github.3.html+json',
-        'Authorization': `token ${input.githubToken}`,
+        'Authorization': `token ${token}`,
       },
     });
     issue = res.data
@@ -58,16 +54,16 @@ async function getIssue(input) {
   }
 }
 
-async function getReview(input) {
+async function getReview(event, token) {
 
   let review;
 
   try {
     const res = await axios({
-      url: `${GITHUB_API_BASE_URL}/repos/${input.event.repository.full_name}/pulls/${input.event.pull_request.number}/reviews/${input.event.review.id}`,
+      url: `${GITHUB_API_BASE_URL}/repos/${event.repository.full_name}/pulls/${event.pull_request.number}/reviews/${event.review.id}`,
       headers: {
         'Accept': 'application/vnd.github.3.html+json',
-        'Authorization': `token ${input.githubToken}`,
+        'Authorization': `token ${token}`,
       },
     });
     review = res.data
@@ -83,16 +79,16 @@ async function getReview(input) {
   }
 }
 
-async function getComment(input) {
+async function getComment(event, token) {
 
   let comment;
 
   try {
     const res = await axios({
-      url: `${GITHUB_API_BASE_URL}/repos/${input.event.repository.full_name}/issues/comments/${input.event.comment.id}`,
+      url: `${GITHUB_API_BASE_URL}/repos/${event.repository.full_name}/issues/comments/${event.comment.id}`,
       headers: {
         'Accept': 'application/vnd.github.3.html+json',
-        'Authorization': `token ${input.githubToken}`,
+        'Authorization': `token ${token}`,
       },
     });
     comment = res.data
@@ -108,16 +104,16 @@ async function getComment(input) {
   }
 }
 
-async function getReviewComments(input) {
+async function getReviewComments(event, token) {
 
   let comments;
 
   try {
     const res = await axios({
-      url: `${GITHUB_API_BASE_URL}/repos/${input.event.repository.full_name}/pulls/${input.event.pull_request.number}/reviews/${input.event.review.id}/comments`,
+      url: `${GITHUB_API_BASE_URL}/repos/${event.repository.full_name}/pulls/${event.pull_request.number}/reviews/${event.review.id}/comments`,
       headers: {
         'Accept': 'application/vnd.github.3.html+json',
-        'Authorization': `token ${input.githubToken}`,
+        'Authorization': `token ${token}`,
       },
     });
     comments = res.data
@@ -142,66 +138,47 @@ class GitHubError extends Error {
   }
 }
 
-async function post2Slack(input, message, previousPostTimestamp) {
+async function post2Slack(message) {
 
-  const actor = input.event.sender.login;
-  message.description = message.description.replace(/<actor>/g, actor);
+  message.description = message.description.replace(/<actor>/g, message.actor.name);
+  message.description = message.description.replace(/<author>/g, message.author.name)
 
-  let author = '';
-  switch (input.eventName) {
-    case 'pull_request':
-    case 'pull_request_review':
-      author = input.event.pull_request.user.login;
-      break;
-    case 'issues':
-    case 'issue_comment':
-      author = input.event.issue.user.login;
-      break;
-    default:
-  }
-  message.description = message.description.replace(/<author>/g, author)
-
-  let threadTimestamp = null;
-  if (input.threadingComments == 'true' && previousPostTimestamp) {
-    threadTimestamp = previousPostTimestamp
-  }
-
-  let fields = '';
-  if (message.codeDetail.changedFiles) {
-    fields = createFields(message.codeDetail.commits, message.codeDetail.changedFiles, message.codeDetail.additions, message.codeDetail.deletions);
+  let fields = null;
+  if (message.pullRequestDetail.shouldShow) {
+    fields = createFields(message.pullRequestDetail);
   }
 
   const res = await axios({
     method: 'post',
     url: `${SLACK_API_BASE_URL}/chat.postMessage`,
     data: {
-      'channel': input.channel,
-      'username': input.appName,
-      'icon_url': input.appIcon,
+      'channel': message.channel,
+      'username': message.appName,
+      'icon_url': message.appIcon,
       'text': message.description,
       'attachments': [
         {
           'mrkdwn_in': ['text'],
           'color': message.color,
-          'author_name': input.event.sender.login,
-          'author_link': input.event.sender.html_url,
-          'author_icon': input.event.sender.avatar_url,
+          'author_name': message.actor.name,
+          'author_link': message.actor.link,
+          'author_icon': message.actor.icon,
           'title': message.title,
           'title_link': message.titleLink,
           'text': message.body,
           'fields': fields,
           'image_url': message.image,
-          'footer': input.footer,
-          'footer_icon': input.footerIcon,
+          'footer': message.footer,
+          'footer_icon': message.footerIcon,
           'ts': Math.floor(new Date().getTime() / 1000),
         }
       ],
-      'thread_ts': threadTimestamp,
+      'thread_ts': message.targetTimestamp,
     },
     responseType: 'json',
     headers: {
       'Content-Type': 'application/json; charset=utf-8',
-      'Authorization': `Bearer ${input.slackToken}`,
+      'Authorization': `Bearer ${message.slackToken}`,
     },
   });
 
@@ -212,16 +189,16 @@ async function post2Slack(input, message, previousPostTimestamp) {
   return res.data.ts; // return timestamp
 }
 
-function createFields(commits, changedFiles, additions, deletions) {
+function createFields(pullRequestDetail) {
   return [
     {
       'title': ':round_pushpin: Commits',
-      'value': commits,
+      'value': `<${pullRequestDetail.url}/commits|${pullRequestDetail.commits}>`,
       'short': true
     },
     {
-      'title': ':page_facing_up: Changed files ( _Changed line_ )',
-      'value': `${changedFiles} ( _*+${additions}*_ _\`-${deletions}\`_ )`,
+      'title': ':page_facing_up: Changed files ( _lines_ )',
+      'value': `<${pullRequestDetail.url}/files|${pullRequestDetail.changedFiles}> ( _+${pullRequestDetail.additions}_ _\`-${pullRequestDetail.deletions}\`_ )`,
       'short': true
     },
   ];

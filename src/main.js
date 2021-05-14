@@ -37,6 +37,7 @@ if (NODE_ENV != 'local') {
     footer: core.getInput('footer'),
     footerIcon: core.getInput('footer-icon'),
     threadingComments: core.getInput('threading-comments'),
+    showPullDetail: core.getInput('show-pull-detail'),
     eventName: core.getInput('event-name'),
     event: core.getInput('event'),
     githubToken: core.getInput('github-token'),
@@ -54,6 +55,10 @@ if (NODE_ENV != 'local') {
       user: {
         login: 'hkusu',
       },
+      commits: 4,
+      additions: 23,
+      deletions: 0,
+      changed_files: 3,
     },
     review: {
       body: 'review body',
@@ -116,6 +121,7 @@ if (NODE_ENV != 'local') {
     footer: '<https://github.com/hkusu/slack-integration|hkusu/slack-integration>',
     footerIcon: 'https://github.com/hkusu.png',
     threadingComments: 'true',
+    showPullDetail: 'true',
     eventName: 'pull_request',
     event: JSON.stringify(event),
     githubToken: GITHUB_TOKEN,
