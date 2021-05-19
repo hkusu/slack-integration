@@ -200,7 +200,7 @@ async function post2Slack(message, token) {
 function createFields(pullRequestDetail) {
   return [
     {
-      'title': ':round_pushpin: Commits',
+      'title': ':heavy_plus_sign: Commits',
       'value': `<${pullRequestDetail.url}/commits|${pullRequestDetail.commits}>`,
       'short': true
     },
