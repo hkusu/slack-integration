@@ -125,7 +125,7 @@ inputs:
     description: ''
     default: 'true'
     required: false
-  thread-comments:
+  threading-comments:
     description: ''
     default: 'false'
     required: false
