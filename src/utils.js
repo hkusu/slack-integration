@@ -27,8 +27,8 @@ async function getPullRequest(event, token) {
   if (text) {
     body = text;
   } else {
-    if (comment.body_text) {
-      body = comment.body_text.replace(/\n/g, '').replace(/ {2,}/g, ' ');
+    if (pullRequest.body_text) {
+      body = pullRequest.body_text.replace(/\n/g, '').replace(/ {2,}/g, ' ');
     }
   }
 
@@ -61,8 +61,8 @@ async function getIssue(event, token) {
   if (text) {
     body = text;
   } else {
-    if (comment.body_text) {
-      body = comment.body_text.replace(/\n/g, '').replace(/ {2,}/g, ' ');
+    if (issue.body_text) {
+      body = issue.body_text.replace(/\n/g, '').replace(/ {2,}/g, ' ');
     }
   }
 
@@ -95,8 +95,8 @@ async function getReview(event, token) {
   if (text) {
     body = text;
   } else {
-    if (comment.body_text) {
-      body = comment.body_text.replace(/\n/g, '').replace(/ {2,}/g, ' ');
+    if (review.body_text) {
+      body = review.body_text.replace(/\n/g, '').replace(/ {2,}/g, ' ');
     }
   }
 
