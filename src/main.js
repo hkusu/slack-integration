@@ -49,7 +49,7 @@ if (NODE_ENV != 'local') {
   };
 } else {
   const event = {
-    action: 'reopened',
+    action: 'created',
     pull_request: {
       number: 2,
       title: 'pull request title',
@@ -81,7 +81,7 @@ if (NODE_ENV != 'local') {
       },
     },
     comment: {
-      id: 831946275,
+      id: 843791973,
       body: 'comment body',
       html_url: 'https://hkusu/slack-integration/pull/1',
     },
@@ -132,7 +132,7 @@ if (NODE_ENV != 'local') {
     showIssueCommentActor: 'true',
     threadingComments: 'true',
     showPullDetail: 'true',
-    eventName: 'pull_request',
+    eventName: 'issue_comment',
     event: JSON.stringify(event),
     githubToken: GITHUB_TOKEN,
   };

@@ -12,7 +12,7 @@ async function getPullRequest(event, token) {
     const res = await axios({
       url: `${GITHUB_API_BASE_URL}/repos/${event.repository.full_name}/pulls/${event.pull_request.number}`,
       headers: {
-        'Accept': 'application/vnd.github.3.html+json',
+        'Accept': 'application/vnd.github.3.full+json',
         'Authorization': `token ${token}`,
       },
     });
@@ -23,8 +23,17 @@ async function getPullRequest(event, token) {
 
   const { text, image } = mrkdwn(pullRequest.body_html);
 
+  let body = '';
+  if (text) {
+    body = text;
+  } else {
+    if (comment.body_text) {
+      body = comment.body_text.replace(/\n/g, '').replace(/ {2,}/g, ' ');
+    }
+  }
+
   return {
-    body: text,
+    body: body,
     image: image,
   }
 }
@@ -37,7 +46,7 @@ async function getIssue(event, token) {
     const res = await axios({
       url: `${GITHUB_API_BASE_URL}/repos/${event.repository.full_name}/issues/${event.issue.number}`,
       headers: {
-        'Accept': 'application/vnd.github.3.html+json',
+        'Accept': 'application/vnd.github.3.full+json',
         'Authorization': `token ${token}`,
       },
     });
@@ -48,8 +57,17 @@ async function getIssue(event, token) {
 
   const { text, image } = mrkdwn(issue.body_html);
 
+  let body = '';
+  if (text) {
+    body = text;
+  } else {
+    if (comment.body_text) {
+      body = comment.body_text.replace(/\n/g, '').replace(/ {2,}/g, ' ');
+    }
+  }
+
   return {
-    body: text,
+    body: body,
     image: image
   }
 }
@@ -62,7 +80,7 @@ async function getReview(event, token) {
     const res = await axios({
       url: `${GITHUB_API_BASE_URL}/repos/${event.repository.full_name}/pulls/${event.pull_request.number}/reviews/${event.review.id}`,
       headers: {
-        'Accept': 'application/vnd.github.3.html+json',
+        'Accept': 'application/vnd.github.3.full+json',
         'Authorization': `token ${token}`,
       },
     });
@@ -73,8 +91,17 @@ async function getReview(event, token) {
 
   const { text, image } = mrkdwn(review.body_html);
 
+  let body = '';
+  if (text) {
+    body = text;
+  } else {
+    if (comment.body_text) {
+      body = comment.body_text.replace(/\n/g, '').replace(/ {2,}/g, ' ');
+    }
+  }
+
   return {
-    body: text,
+    body: body,
     image: image
   }
 }
@@ -87,7 +114,7 @@ async function getComment(event, token) {
     const res = await axios({
       url: `${GITHUB_API_BASE_URL}/repos/${event.repository.full_name}/issues/comments/${event.comment.id}`,
       headers: {
-        'Accept': 'application/vnd.github.3.html+json',
+        'Accept': 'application/vnd.github.3.full+json',
         'Authorization': `token ${token}`,
       },
     });
@@ -98,8 +125,17 @@ async function getComment(event, token) {
 
   const { text, image } = mrkdwn(comment.body_html);
 
+  let body = '';
+  if (text) {
+    body = text;
+  } else {
+    if (comment.body_text) {
+      body = comment.body_text.replace(/\n/g, '').replace(/ {2,}/g, ' ');
+    }
+  }
+
   return {
-    body: text,
+    body: body,
     image: image
   }
 }
@@ -112,7 +148,7 @@ async function getReviewComments(event, token) {
     const res = await axios({
       url: `${GITHUB_API_BASE_URL}/repos/${event.repository.full_name}/pulls/${event.pull_request.number}/reviews/${event.review.id}/comments`,
       headers: {
-        'Accept': 'application/vnd.github.3.html+json',
+        'Accept': 'application/vnd.github.3.full+json',
         'Authorization': `token ${token}`,
       },
     });
@@ -123,9 +159,19 @@ async function getReviewComments(event, token) {
 
   return comments.map(comment => {
     const { text, image } = mrkdwn(comment.body_html);
+
+    let body = '';
+    if (text) {
+      body = text;
+    } else {
+      if (comment.body_text) {
+        body = comment.body_text.replace(/\n/g, '').replace(/ {2,}/g, ' ');
+      }
+    }
+
     return {
       html_url: comment.html_url,
-      body: text,
+      body: body,
       image: image,
     }
   })
