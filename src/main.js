@@ -49,7 +49,7 @@ if (NODE_ENV != 'local') {
   };
 } else {
   const event = {
-    action: 'created',
+    action: 'opened',
     pull_request: {
       number: 2,
       title: 'pull request title',
@@ -64,6 +64,18 @@ if (NODE_ENV != 'local') {
       additions: 23,
       deletions: 0,
       changed_files: 3,
+      labels: [
+        {
+          name: "good first issue",
+        },
+        {
+          name: "dupli cate",
+        }
+      ],
+      milestone: {
+        number: 2,
+        title: "v4.5.6",
+      },
     },
     review: {
       body: 'review body',
@@ -132,7 +144,7 @@ if (NODE_ENV != 'local') {
     showIssueCommentActor: 'true',
     threadingComments: 'true',
     showPullDetail: 'true',
-    eventName: 'issue_comment',
+    eventName: 'pull_request',
     event: JSON.stringify(event),
     githubToken: GITHUB_TOKEN,
   };
