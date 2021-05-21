@@ -244,6 +244,7 @@ async function post2Slack(message, token) {
 }
 
 function createFields(repoUrl, detail) {
+
   const fields = [
     {
       'title': ':heavy_plus_sign: Commits',
@@ -256,6 +257,7 @@ function createFields(repoUrl, detail) {
       'short': true
     },
   ];
+
   if (detail.labelNames.length != 0) {
     fields.push(
       {
@@ -265,6 +267,17 @@ function createFields(repoUrl, detail) {
       }
     )
   }
+
+  if (detail.milestone.number) {
+    fields.push(
+      {
+        'title': ':triangular_flag_on_post: Milestone',
+        'value': `<${repoUrl}/milestone/${detail.milestone.number}|${detail.milestone.name}>`,
+        'short': true
+      }
+    )
+  }
+
   return fields;
 }
 
