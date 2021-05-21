@@ -58,17 +58,7 @@ async function handlePullRequest(input) {
       } else {
         message.description = input.pullOpenMessage;
         message.color = COLOR.OPEN_GREEN;
-        const { body, image } = await githubApi.getPullRequest(input.event, input.githubToken);
-        message.body = body;
-        message.image = image;
-        if (input.showPullDetail != 'false') {
-          message.pullRequestDetail.shouldShow = true;
-        }
-        message.pullRequestDetail.commits = input.event.pull_request.commits;
-        message.pullRequestDetail.changedFiles = input.event.pull_request.changed_files;
-        message.pullRequestDetail.additions = input.event.pull_request.additions;
-        message.pullRequestDetail.deletions = input.event.pull_request.deletions;
-        message.pullRequestDetail.url = input.event.pull_request.html_url;
+        await setContents();
       }
       break;
     }
@@ -79,34 +69,14 @@ async function handlePullRequest(input) {
       } else {
         message.description = input.pullReopenMessage;
         message.color = COLOR.OPEN_GREEN;
-        const { body, image } = await githubApi.getPullRequest(input.event, input.githubToken);
-        message.body = body;
-        message.image = image;
-        if (input.showPullDetail != 'false') {
-          message.pullRequestDetail.shouldShow = true;
-        }
-        message.pullRequestDetail.commits = input.event.pull_request.commits;
-        message.pullRequestDetail.changedFiles = input.event.pull_request.changed_files;
-        message.pullRequestDetail.additions = input.event.pull_request.additions;
-        message.pullRequestDetail.deletions = input.event.pull_request.deletions;
-        message.pullRequestDetail.url = input.event.pull_request.html_url;
+        await setContents();
       }
       break;
     }
     case 'ready_for_review': {
       message.description = input.pullReadyMessage;
       message.color = COLOR.OPEN_GREEN;
-      const { body, image, } = await githubApi.getPullRequest(input.event, input.githubToken);
-      message.body = body;
-      message.image = image;
-      if (input.showPullDetail != 'false') {
-        message.pullRequestDetail.shouldShow = true;
-      }
-      message.pullRequestDetail.commits = input.event.pull_request.commits;
-      message.pullRequestDetail.changedFiles = input.event.pull_request.changed_files;
-      message.pullRequestDetail.additions = input.event.pull_request.additions;
-      message.pullRequestDetail.deletions = input.event.pull_request.deletions;
-      message.pullRequestDetail.url = input.event.pull_request.html_url;
+      await setContents();
       break;
     }
     case 'closed': {
@@ -125,6 +95,27 @@ async function handlePullRequest(input) {
   }
 
   await slackApi.post(message, input.slackToken);
+
+  async function setContents() {
+    const { body, image } = await githubApi.getPullRequest(input.event, input.githubToken);
+    message.body = body;
+    message.image = image;
+    if (input.showPullDetail != 'false') {
+      message.pullDetail.shouldShow = true;
+    }
+    message.pullDetail.commits = input.event.pull_request.commits;
+    message.pullDetail.changedFiles = input.event.pull_request.changed_files;
+    message.pullDetail.additions = input.event.pull_request.additions;
+    message.pullDetail.deletions = input.event.pull_request.deletions;
+    message.pullDetail.number = input.event.pull_request.number;
+    if (input.event.pull_request.labels.length != 0) {
+      message.pullDetail.labelNames = input.event.pull_request.labels.map(label => label.name)
+    }
+    if (input.event.pull_request.milestone) {
+      message.pullDetail.milestone.number = input.event.pull_request.milestone.number;
+      message.pullDetail.milestone.name = input.event.pull_request.milestone.title;
+    }
+  }
 }
 
 async function handleIssues(input) {
@@ -145,17 +136,13 @@ async function handleIssues(input) {
     case 'opened': {
       message.description = input.issueOpenMessage;
       message.color = COLOR.OPEN_GREEN;
-      const { body, image } = await githubApi.getIssue(input.event, input.githubToken);
-      message.body = body;
-      message.image = image;
+      await setContents();
       break;
     }
     case 'reopened': {
       message.description = input.issueReopenMessage;
       message.color = COLOR.OPEN_GREEN;
-      const { body, image } = await githubApi.getIssue(input.event, input.githubToken);
-      message.body = body;
-      message.image = image;
+      await setContents();
       break;
     }
     case 'closed': {
@@ -169,6 +156,12 @@ async function handleIssues(input) {
   }
 
   await slackApi.post(message, input.slackToken);
+
+  async function setContents() {
+    const { body, image } = await githubApi.getIssue(input.event, input.githubToken);
+    message.body = body;
+    message.image = image;
+  }
 }
 
 async function handlePullRequestReview(input) {
@@ -312,15 +305,21 @@ function createBaseMessage(input) {
     titleLink: '',
     body: '',
     image: '',
-    pullRequestDetail: {
+    pullDetail: {
       shouldShow: false,
       commits: 0,
       changedFiles: 0,
       additions: 0,
       deletions: 0,
-      url: '',
+      number: null,
+      labelNames: [],
+      milestone: {
+        number: null,
+        name: '',
+      },
     },
     targetTimestamp: '',
+    repoUrl: input.event.repository.html_url,
   }
 }
 

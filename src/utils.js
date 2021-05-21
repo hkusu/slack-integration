@@ -190,9 +190,9 @@ async function post2Slack(message, token) {
   description = description.replace(/<actor>/g, message.actor.name);
   description = description.replace(/<author>/g, message.author.name)
 
-  let fields = '';
-  if (message.pullRequestDetail.shouldShow) {
-    fields = createFields(message.pullRequestDetail);
+  let fields = [];
+  if (message.pullDetail.shouldShow) {
+    fields = createFields(message.repoUrl, message.pullDetail);
   }
 
   let authorName = '', authorLink = '', authorIcon = '';
@@ -243,19 +243,29 @@ async function post2Slack(message, token) {
   return res.data.ts; // return timestamp
 }
 
-function createFields(pullRequestDetail) {
-  return [
+function createFields(repoUrl, detail) {
+  const fields = [
     {
       'title': ':heavy_plus_sign: Commits',
-      'value': `<${pullRequestDetail.url}/commits|${pullRequestDetail.commits}>`,
+      'value': `<${repoUrl}/pull/${detail.number}/commits|${detail.commits}>`,
       'short': true
     },
     {
       'title': ':page_facing_up: Changed files ( _lines_ )',
-      'value': `<${pullRequestDetail.url}/files|${pullRequestDetail.changedFiles}> ( _+${pullRequestDetail.additions}_ _\`-${pullRequestDetail.deletions}\`_ )`,
+      'value': `<${repoUrl}/pull/${detail.number}/files|${detail.changedFiles}> ( _+${detail.additions}_ _\`-${detail.deletions}\`_ )`,
       'short': true
     },
   ];
+  if (detail.labelNames.length != 0) {
+    fields.push(
+      {
+        'title': ':bookmark: Labels',
+        'value': detail.labelNames.map(name => `<${repoUrl}/labels/${name}|\`${name}\`>`).join(' '),
+        'short': true
+      }
+    )
+  }
+  return fields;
 }
 
 module.exports = {
