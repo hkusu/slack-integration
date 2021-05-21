@@ -41,11 +41,11 @@ inputs:
     required: false
   pull-draft-open-message:
     description: ''
-    default: 'Pull request opened by <actor> :memo:'
+    default: 'Draft pull request opened by <actor> :memo:'
     required: false
   pull-draft-reopen-message:
     description: ''
-    default: 'Pull request reopened by <actor> :memo:'
+    default: 'Draft pull request reopened by <actor> :memo:'
     required: false
   pull-ready-message:
     description: ''
