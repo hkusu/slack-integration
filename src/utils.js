@@ -190,9 +190,9 @@ async function post2Slack(message, token) {
   description = description.replace(/<actor>/g, message.actor.name);
   description = description.replace(/<author>/g, message.author.name)
 
-  let fields = [];
-  if (message.pullDetail.shouldShow) {
-    fields = createFields(message.repoUrl, message.pullDetail);
+  let appEmoji = null; // Empty string is judged to have data
+  if (message.appEmoji) {
+    appEmoji = message.appEmoji;
   }
 
   let authorName = '', authorLink = '', authorIcon = '';
@@ -202,6 +202,11 @@ async function post2Slack(message, token) {
     authorIcon = message.actor.icon;
   }
 
+  let fields = [];
+  if (message.pullDetail.shouldShow) {
+    fields = createFields(message.repoUrl, message.pullDetail);
+  }
+
   const res = await axios({
     method: 'post',
     url: `${SLACK_API_BASE_URL}/chat.postMessage`,
@@ -209,6 +214,7 @@ async function post2Slack(message, token) {
       'channel': message.channel,
       'username': message.appName,
       'icon_url': message.appIcon,
+      'icon_emoji': appEmoji,
       'text': description,
       'attachments': [
         {
