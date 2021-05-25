@@ -247,12 +247,12 @@ function createFields(repoUrl, detail) {
 
   const fields = [
     {
-      'title': ':heavy_plus_sign: Commits',
+      'title': 'Commits',
       'value': `<${repoUrl}/pull/${detail.number}/commits|${detail.commits}>`,
       'short': true
     },
     {
-      'title': ':page_facing_up: Changed files ( _lines_ )',
+      'title': 'Changed files ( _lines_ )',
       'value': `<${repoUrl}/pull/${detail.number}/files|${detail.changedFiles}> ( _+${detail.additions}_ _\`-${detail.deletions}\`_ )`,
       'short': true
     },
@@ -261,7 +261,7 @@ function createFields(repoUrl, detail) {
   if (detail.labelNames.length != 0) {
     fields.push(
       {
-        'title': ':bookmark: Labels',
+        'title': 'Labels',
         'value': detail.labelNames.map(name => `<${repoUrl}/labels/${name}|\`${name}\`>`).join(' '),
         'short': true
       }
@@ -271,7 +271,7 @@ function createFields(repoUrl, detail) {
   if (detail.milestone.number) {
     fields.push(
       {
-        'title': ':triangular_flag_on_post: Milestone',
+        'title': 'Milestone',
         'value': `<${repoUrl}/milestone/${detail.milestone.number}|${detail.milestone.name}>`,
         'short': true
       }
