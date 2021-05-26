@@ -288,6 +288,7 @@ function createBaseMessage(input) {
     channel: input.channel,
     appName: input.appName,
     appIcon: input.appIcon,
+    appEmoji: input.appEmoji,
     footer: input.footer,
     footerIcon: input.footerIcon,
     author: {

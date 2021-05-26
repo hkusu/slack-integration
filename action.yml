@@ -97,6 +97,9 @@ inputs:
   app-icon:
     description: ''
     required: false
+  app-emoji:
+    description: ''
+    required: false
   footer:
     description: ''
     default: <${{ github.event.repository.html_url }}|${{ github.event.repository.full_name }}>
