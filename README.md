@@ -1,8 +1,9 @@
 # Slack Integration
 
-<img src="./doc/image1.png" width="400">
+This Action sends pull request and issue events to your Slack channel.
+This is useful in environments where [official integration](https://github.com/integrations/slack) is not available, such as Slack Enterprise Grid.
 
-Useful when [official integration](https://github.com/integrations/slack) is not available, such as Slack Enterprise Grid.
+<img src="./doc/image1.png" width="550">
 
 ## Usage
 
@@ -57,7 +58,7 @@ Also, to handle `issue` and `issue_comment` events that need to be in the defaul
 
 #### Message
 
-<img src="./doc/image2.png" width="400">
+<img src="./doc/image2.png" width="500">
 
 All inputs are **optional**. 
 In the message you set, `<actor>` is replaced with the username that took the action.
@@ -83,19 +84,19 @@ Similarly, `<author>` is replaced by the creator of the pull request or issue.
 
 #### App and footer
 
-<img src="./doc/image3.png" width="400">
+<img src="./doc/image3.png" width="350">
 
 | Name | Default |
 | --- | --- |
 | `app-name` |  |
 | `app-icon` |  |
 | `app-emoji` |  |
-| `footer` | `<${{ github.event.repository.html_url }}|${{ github.event.repository.full_name }}>` |
+| `footer` | `<${{ github.event.repository.html_url }}\|${{ github.event.repository.full_name }}>` |
 | `footer-icon` | `${{ github.event.repository.owner.avatar_url }}` |
 
 #### Actor
 
-<img src="./doc/image4.png" width="400">
+<img src="./doc/image4.png" width="500">
 
 | Name | Description | Default |
 | --- | --- | --- |
@@ -107,7 +108,7 @@ Similarly, `<author>` is replaced by the creator of the pull request or issue.
 
 #### Threading comments
 
-<img src="./doc/image5.png" width="400">
+<img src="./doc/image5.png" width="500">
 
 | Name | Default |
 | --- | --- |
@@ -115,7 +116,7 @@ Similarly, `<author>` is replaced by the creator of the pull request or issue.
 
 #### Pull request details
 
-<img src="./doc/image6.png" width="400">
+<img src="./doc/image6.png" width="500">
 
 | Name | Default |
 | --- | --- |
