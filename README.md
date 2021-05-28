@@ -7,7 +7,7 @@ This is useful in environments where [official integration](https://github.com/i
 
 ## Usage
 
-### Basic
+### Basic usage
 
 ```yaml
 name: Slack Integration
@@ -42,9 +42,7 @@ This YAML file must be in the head branch of the pull request to handle `pull_re
 Also, to handle `issue` and `issue_comment` events that need to be in the default branch.
 `issue_comment` event is required not only for issues but also for pull request comments.
 
-### Action inputs
-
-#### Basic
+**Action inputs**:
 
 | Name | Description | Default |
 | --- | --- | --- |
@@ -53,16 +51,16 @@ Also, to handle `issue` and `issue_comment` events that need to be in the defaul
 | `subscribe-pulls` | Subscribe to pull request open, reopen, ready, and close events. | `false` |
 | `subscribe-issues` | Subscribe to issue open, reopen, and close events. | `false` |
 | `subscribe-reviews` | Subscribe to pull request review submit events. | `false` |
-| `subscribe-pull-comments` | Subscribe to pull request comment events. | `false` |
-| `subscribe-issue-comments` | Subscribe to issue comment events. | `false` |
+| `subscribe-pull-comments` | Subscribe to comment events on pull requests. | `false` |
+| `subscribe-issue-comments` | Subscribe to comment events on issues. | `false` |
 
-#### Message
+### Customize messages
 
 <img src="./doc/image2.png" width="500">
 
-All inputs are **optional**. 
-In the message you set, `<actor>` is replaced with the username that took the action.
-Similarly, `<author>` is replaced by the creator of the pull request or issue.
+To change the message with the default, set the following inputs.
+
+**Action inputs**:
 
 | Name | Description | Default |
 | --- | --- | --- |
@@ -82,45 +80,70 @@ Similarly, `<author>` is replaced by the creator of the pull request or issue.
 | `review-request-changes-message` | Requested change in review. | `<actor> requested changes on <author>''s pull request :no_entry:` |
 | `review-comment-message` | Commented in the review. | `<actor> commented on <author>''s pull request :speech_balloon:` |
 
-#### App and footer
+**Note**:
+In the message you set, `<actor>` is replaced with the user name that took the action.
+Similarly, `<author>` is replaced by the creator of the pull request or issue.
 
-<img src="./doc/image3.png" width="350">
+**Tips**:
+Custom emojis in your slack workspace are effective.
 
-| Name | Default |
-| --- | --- |
-| `app-name` |  |
-| `app-icon` |  |
-| `app-emoji` |  |
-| `footer` | `<${{ github.event.repository.html_url }}\|${{ github.event.repository.full_name }}>` |
-| `footer-icon` | `${{ github.event.repository.owner.avatar_url }}` |
+### App and footer information
 
-#### Actor
+<img src="./doc/image3.png" width="500">
 
-<img src="./doc/image4.png" width="500">
+**Action inputs**:
 
 | Name | Description | Default |
 | --- | --- | --- |
-| `show-pull-actor` |  | `true` |
-| `show-issue-actor` |  | `true` |
-| `show-review-actor` |  | `true` |
-| `show-pull-comment-actor` |  | `true` |
-| `show-issue-comment-actor` |  | `true` |
+| `app-name` |  |  |
+| `app-icon` | Icon url. |  |
+| `app-emoji` | Emoji, eg `:ghost`. This is prioritized even if `app-icon` is set. |  |
+| `footer` |  | `<${{ github.event.repository.html_url }}\|${{ github.event.repository.full_name }}>` |
+| `footer-icon` | Icon url. | `${{ github.event.repository.owner.avatar_url }}` |
 
-#### Threading comments
+
+### Actor icon and name
+
+<img src="./doc/image4.png" width="500">
+
+Set whether to show the actor (user who took action) icon and name.
+
+**Action inputs**:
+
+| Name | Description | Default |
+| --- | --- | --- |
+| `show-pull-actor` | Show actor of pull request events. | `true` |
+| `show-issue-actor` | Show actor of issue events. | `true` |
+| `show-review-actor` | Show actor of pull request review events. | `true` |
+| `show-pull-comment-actor` | Show actor of comment events on pull request. | `true` |
+| `show-issue-comment-actor` | Show actor of comment events on issue. | `true` |
+
+### Threading comments
 
 <img src="./doc/image5.png" width="500">
 
-| Name | Default |
-| --- | --- |
-| `threading-comments` | `false` |
+Thread comments posted at the same time, such as comments to pull request code.
 
-#### Pull request details
+**Action inputs**:
+
+| Name | Description | Default |
+| --- | --- | --- |
+| `threading-comments` | Thread comments posted at the same time. | `false` |
+
+### Pull request details
 
 <img src="./doc/image6.png" width="500">
 
-| Name | Default |
-| --- | --- |
-| `show-pull-detail` | `true` |
+**Action inputs**:
+
+| Name | Description | Default |
+| --- | --- | --- |
+| `show-pull-detail` | Show details of pull request (number of commits, number of changed files, labels, milestone). | `true` |
+
+## Limitations
+
+Due to GitHub restrictions, you cannot subscribe to events such as pull request creation and comments using `GITHUB_TOKEN`.
+Use a personal access token to avoid this.
 
 ## License
 
