@@ -1,5 +1,5 @@
 name: 'Slack Integration for GitHub'
-description: 'Slack integration for GitHub.'
+description: 'This Action sends pull request and issue event messages to your Slack channel.'
 author: 'Hiroyuki Kusu'
 branding:
   icon: 'hash'
