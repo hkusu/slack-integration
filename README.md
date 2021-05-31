@@ -1,6 +1,6 @@
 # Slack Integration
 
-This Action sends pull request and issue events to your Slack channel.
+This Action sends pull request and issue event messages to your Slack channel.
 This is useful in environments where [official integration](https://github.com/integrations/slack) is not available, such as Slack Enterprise Grid.
 
 <img src="./doc/image1.png" width="550">
