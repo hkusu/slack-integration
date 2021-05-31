@@ -1,5 +1,5 @@
 {
-  "name": "slack-integration",
+  "name": "slack-integration-for-github",
   "version": "1.0.0",
   "description": "This Action sends pull request and issue event messages to your Slack channel.",
   "main": "src/main.js",
