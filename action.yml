@@ -80,12 +80,12 @@ inputs:
     default: ''
     required: false
   review-approve-message:
-    description: '<actor> approved <author>''s pull request :white_check_mark:'
-    default: ''
+    description: ''
+    default: '<actor> approved <author>''s pull request :white_check_mark:'
     required: false
   review-request-changes-message:
-    description: '<actor> requested changes on <author>''s pull request :no_entry:'
-    default: ''
+    description: ''
+    default: '<actor> requested changes on <author>''s pull request :no_entry:'
     required: false
   review-comment-message:
     description: ''
