@@ -197,7 +197,11 @@ async function post2Slack(message, token) {
 
   let authorName = '', authorLink = '', authorIcon = '';
   if (message.actor.shouldShow) {
-    authorName = message.actor.name;
+    if (message.actor.name == message.author.name) {
+      authorName = `${message.actor.name} (author)`;
+    } else {
+      authorName = message.actor.name;
+    }
     authorLink = message.actor.link;
     authorIcon = message.actor.icon;
   }
