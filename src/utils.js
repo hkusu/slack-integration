@@ -21,15 +21,26 @@ async function getPullRequest(event, token) {
     throw new GitHubError(e.message);
   }
 
-  const { text, image } = mrkdwn(pullRequest.body_html);
+  let bodyHtml = ''
+  if (pullRequest.body_html) { // May be null, so make it an empty string
+    bodyHtml = pullRequest.body_html;
+  }
+
+  const { text: mrkdwnBody, image: mrkdwnImage } = mrkdwn(bodyHtml); // Argument must be a string
 
   let body = '';
-  if (text) {
-    body = text;
+  if (mrkdwnBody) {
+    body = mrkdwnBody;
   } else {
     if (pullRequest.body_text) {
+      // Remove line breaks and spaces that follow more than one
       body = pullRequest.body_text.replace(/\n/g, '').replace(/ {2,}/g, ' ');
     }
+  }
+
+  let image = ''
+  if (mrkdwnImage) { // May be undefined, so make it an empty string
+    image = mrkdwnImage;
   }
 
   return {
@@ -55,15 +66,26 @@ async function getIssue(event, token) {
     throw new GitHubError(e.message);
   }
 
-  const { text, image } = mrkdwn(issue.body_html);
+  let bodyHtml = ''
+  if (issue.body_html) { // May be null, so make it an empty string
+    bodyHtml = issue.body_html;
+  }
+
+  const { text: mrkdwnBody, image: mrkdwnImage } = mrkdwn(bodyHtml); // Argument must be a string
 
   let body = '';
-  if (text) {
-    body = text;
+  if (mrkdwnBody) {
+    body = mrkdwnBody;
   } else {
     if (issue.body_text) {
+      // Remove line breaks and spaces that follow more than one
       body = issue.body_text.replace(/\n/g, '').replace(/ {2,}/g, ' ');
     }
+  }
+
+  let image = ''
+  if (mrkdwnImage) { // May be undefined, so make it an empty string
+    image = mrkdwnImage;
   }
 
   return {
@@ -89,15 +111,26 @@ async function getReview(event, token) {
     throw new GitHubError(e.message);
   }
 
-  const { text, image } = mrkdwn(review.body_html);
+  let bodyHtml = ''
+  if (review.body_html) { // May be null, so make it an empty string
+    bodyHtml = review.body_html;
+  }
+
+  const { text: mrkdwnBody, image: mrkdwnImage } = mrkdwn(bodyHtml); // Argument must be a string
 
   let body = '';
-  if (text) {
-    body = text;
+  if (mrkdwnBody) {
+    body = mrkdwnBody;
   } else {
     if (review.body_text) {
+      // Remove line breaks and spaces that follow more than one
       body = review.body_text.replace(/\n/g, '').replace(/ {2,}/g, ' ');
     }
+  }
+
+  let image = ''
+  if (mrkdwnImage) { // May be undefined, so make it an empty string
+    image = mrkdwnImage;
   }
 
   return {
@@ -123,15 +156,26 @@ async function getComment(event, token) {
     throw new GitHubError(e.message);
   }
 
-  const { text, image } = mrkdwn(comment.body_html);
+  let bodyHtml = ''
+  if (comment.body_html) { // May be null, so make it an empty string
+    bodyHtml = comment.body_html;
+  }
+
+  const { text: mrkdwnBody, image: mrkdwnImage } = mrkdwn(bodyHtml); // Argument must be a string
 
   let body = '';
-  if (text) {
-    body = text;
+  if (mrkdwnBody) {
+    body = mrkdwnBody;
   } else {
     if (comment.body_text) {
+      // Remove line breaks and spaces that follow more than one
       body = comment.body_text.replace(/\n/g, '').replace(/ {2,}/g, ' ');
     }
+  }
+
+  let image = ''
+  if (mrkdwnImage) { // May be undefined, so make it an empty string
+    image = mrkdwnImage;
   }
 
   return {
@@ -158,15 +202,27 @@ async function getReviewComments(event, token) {
   }
 
   return comments.map(comment => {
-    const { text, image } = mrkdwn(comment.body_html);
+
+    let bodyHtml = ''
+    if (comment.body_html) { // May be null, so make it an empty string
+      bodyHtml = comment.body_html;
+    }
+
+    const { text: mrkdwnBody, image: mrkdwnImage } = mrkdwn(bodyHtml); // Argument must be a string
 
     let body = '';
-    if (text) {
-      body = text;
+    if (mrkdwnBody) {
+      body = mrkdwnBody;
     } else {
       if (comment.body_text) {
+        // Remove line breaks and spaces that follow more than one
         body = comment.body_text.replace(/\n/g, '').replace(/ {2,}/g, ' ');
       }
+    }
+
+    let image = ''
+    if (mrkdwnImage) { // May be undefined, so make it an empty string
+      image = mrkdwnImage;
     }
 
     return {
