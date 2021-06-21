@@ -161,6 +161,16 @@ async function handleIssues(input) {
     const { body, image } = await githubApi.getIssue(input.event, input.githubToken);
     message.body = body;
     message.image = image;
+    if (input.showIssueDetail != 'false') {
+      message.issueDetail.shouldShow = true;
+    }
+    if (input.event.issue.labels.length != 0) {
+      message.issueDetail.labelNames = input.event.issue.labels.map(label => label.name)
+    }
+    if (input.event.issue.milestone) {
+      message.issueDetail.milestone.number = input.event.issue.milestone.number;
+      message.issueDetail.milestone.name = input.event.issue.milestone.title;
+    }
   }
 }
 
@@ -313,6 +323,14 @@ function createBaseMessage(input) {
       additions: 0,
       deletions: 0,
       number: null,
+      labelNames: [],
+      milestone: {
+        number: null,
+        name: '',
+      },
+    },
+    issueDetail: {
+      shouldShow: false,
       labelNames: [],
       milestone: {
         number: null,

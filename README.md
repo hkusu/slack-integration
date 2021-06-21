@@ -130,7 +130,7 @@ Thread comments posted at the same time, such as comments to pull request code.
 | --- | --- | --- |
 | `threading-comments` | Thread comments posted at the same time. | `false` |
 
-### Pull request details
+### Pull request / Issue details
 
 <img src="./doc/image6.png" width="500">
 
@@ -139,6 +139,7 @@ Thread comments posted at the same time, such as comments to pull request code.
 | Name | Description | Default |
 | --- | --- | --- |
 | `show-pull-detail` | Show details of pull request (number of commits, number of changed files, labels, milestone). | `true` |
+| `show-issue-detail` | Show details of issue (labels, milestone). | `true` |
 
 ## Limitations
 

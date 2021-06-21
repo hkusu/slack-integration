@@ -136,6 +136,10 @@ inputs:
     description: ''
     default: 'true'
     required: false
+  show-issue-detail:
+    description: ''
+    default: 'true'
+    required: false
   event-name:
     description: ''
     default: ${{ github.event_name }}
