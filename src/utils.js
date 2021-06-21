@@ -264,7 +264,9 @@ async function post2Slack(message, token) {
 
   let fields = [];
   if (message.pullDetail.shouldShow) {
-    fields = createFields(message.repoUrl, message.pullDetail);
+    fields = createPullRequestFields(message.repoUrl, message.pullDetail);
+  } else if (message.issueDetail.shouldShow) {
+    fields = createIssueFields(message.repoUrl, message.issueDetail);
   }
 
   const res = await axios({
@@ -309,7 +311,7 @@ async function post2Slack(message, token) {
   return res.data.ts; // return timestamp
 }
 
-function createFields(repoUrl, detail) {
+function createPullRequestFields(repoUrl, detail) {
 
   const fields = [
     {
@@ -323,6 +325,33 @@ function createFields(repoUrl, detail) {
       'short': true
     },
   ];
+
+  if (detail.labelNames.length != 0) {
+    fields.push(
+      {
+        'title': 'Labels',
+        'value': detail.labelNames.map(name => `<${repoUrl}/labels/${name}|\`${name}\`>`).join(' '),
+        'short': true
+      }
+    )
+  }
+
+  if (detail.milestone.number) {
+    fields.push(
+      {
+        'title': 'Milestone',
+        'value': `<${repoUrl}/milestone/${detail.milestone.number}|${detail.milestone.name}>`,
+        'short': true
+      }
+    )
+  }
+
+  return fields;
+}
+
+function createIssueFields(repoUrl, detail) {
+
+  const fields = [];
 
   if (detail.labelNames.length != 0) {
     fields.push(

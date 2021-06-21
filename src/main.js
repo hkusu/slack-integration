@@ -44,6 +44,7 @@ if (NODE_ENV != 'local') {
     showIssueCommentActor: core.getInput('show-issue-comment-actor'),
     threadingComments: core.getInput('threading-comments'),
     showPullDetail: core.getInput('show-pull-detail'),
+    showIssueDetail: core.getInput('show-issue-detail'),
     eventName: core.getInput('event-name'),
     event: core.getInput('event'),
     githubToken: core.getInput('github-token'),
@@ -70,7 +71,7 @@ if (NODE_ENV != 'local') {
           name: "good first issue",
         },
         {
-          name: "dupli cate",
+          name: "duplicate",
         }
       ],
       milestone: {
@@ -85,12 +86,24 @@ if (NODE_ENV != 'local') {
       state: 'approved',
     },
     issue: {
-      number: 99,
+      number: 6,
       title: 'issue title',
       html_url: 'https://github.com/hkusu/slack-integration/pull/1',
       body: 'issue body',
       user: {
         login: 'hkusu',
+      },
+      labels: [
+        {
+          name: "good first issue",
+        },
+        {
+          name: "duplicate",
+        }
+      ],
+      milestone: {
+        number: 2,
+        title: "v4.5.6",
       },
     },
     comment: {
@@ -146,6 +159,7 @@ if (NODE_ENV != 'local') {
     showIssueCommentActor: 'true',
     threadingComments: 'true',
     showPullDetail: 'true',
+    showIssueDetail: 'true',
     eventName: 'pull_request',
     event: JSON.stringify(event),
     githubToken: GITHUB_TOKEN,
